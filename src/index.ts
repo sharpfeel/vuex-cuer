@@ -3,62 +3,51 @@ import Vuex, { ActionContext, MutationTree, ActionTree, Store } from "vuex";
 
 Vue.use(Vuex);
 
-export type StoreMixin<T> = { store: T };
-export type StoreFunc<T> = (this: StoreMixin<T>, payload?: unknown) => unknown;
+export type StoreMixin<T> = { cuer: T };
+export type StoreFunc<T> = (this: StoreMixin<T>, payload?: any) => any;
 export interface StoreFuncs<T> {
   [key: string]: StoreFunc<T>;
 }
 
 export interface Getters {
-  [key: string]: unknown;
+  [key: string]: any;
 }
 
 /**
  * store
  */
-export default class StoreCuer<
-  S,
-  M extends StoreFuncs<StoreCuer<S, M, A, G>>,
-  A extends StoreFuncs<StoreCuer<S, M, A, G>>,
-  G extends Getters
-> {
+export default abstract class StoreCuer<S, M, A> {
   private store: Store<S>;
-  readonly commit: M & StoreMixin<StoreCuer<S, M, A, G>>;
-  readonly dispatch: A & StoreMixin<StoreCuer<S, M, A, G>>;
-  public getters!: G;
+  readonly commit: M;
+  readonly dispatch: A;
 
   get state() {
     return this.store.state;
   }
 
-  constructor(options: {
-    state: S | (() => S);
-    mutations?: M;
-    actions?: A;
-    //getters?: G;
-  }) {
-    type T = StoreFuncs<StoreCuer<S, M, A, G>>;
+  constructor(options: { state: S | (() => S) }) {
+    type T = StoreFuncs<StoreCuer<S, M, A>>;
     const mutations: MutationTree<S> = {};
     const _ms: T = {};
-    const commits: T = options.mutations || {};
+    const commits: T = this.mutations || {};
 
     const actions: ActionTree<S, S> = {};
     const _as: T = {};
-    const dispatchs: T = options.actions || {};
+    const dispatchs: T = this.actions || {};
 
     if (commits) {
       for (const key in commits) {
         _ms[key] = commits[key];
-        mutations[key] = (state: S, payload?: unknown) =>
-          _ms[key].call({ store: this }, payload);
+        mutations[key] = (state: S, payload?: any) =>
+          _ms[key].call({ cuer: this }, payload);
       }
     }
 
     if (dispatchs) {
       for (const key in dispatchs) {
         _as[key] = dispatchs[key];
-        actions[key] = (injectee: ActionContext<S, S>, payload?: unknown) =>
-          _as[key].call({ store: this }, payload);
+        actions[key] = (injectee: ActionContext<S, S>, payload?: any) =>
+          _as[key].call({ cuer: this }, payload);
       }
     }
 
@@ -68,21 +57,27 @@ export default class StoreCuer<
       actions
     });
 
-    if (options.mutations) {
+    if (this.mutations) {
       for (const key in commits) {
-        commits[key] = (payload?: unknown) => this.store.commit(key, payload);
+        commits[key] = (payload?: any) => this.store.commit(key, payload);
       }
     }
 
     if (dispatchs) {
       for (const key in dispatchs) {
-        dispatchs[key] = (payload?: unknown) =>
-          this.store.dispatch(key, payload);
+        dispatchs[key] = (payload?: any) => this.store.dispatch(key, payload);
       }
     }
 
-    this.commit = Object.assign(options.mutations, { store: this });
-    this.dispatch = Object.assign(options.actions, { store: this });
-    //this.getters = options.getters;
+    this.commit = Object.assign(this.mutations, { cuer: this });
+    this.dispatch = Object.assign(this.actions, { cuer: this });
+  }
+
+  protected get mutations(): M {
+    return undefined;
+  }
+
+  protected get actions(): A {
+    return undefined;
   }
 }

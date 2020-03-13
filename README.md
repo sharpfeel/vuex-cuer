@@ -1,29 +1,24 @@
 # vuex-cuer
 
-## Project setup
+### 简介
+Vuex的 `commit` 和 `dispatch` 没有友好的提示，大项目难以维护。如何避免，使用 `vuex-cuer`
+
+### 安装
 ```
-yarn install
+//npm
+npm install vuex-cuer
+
+//yarn
+yarn install vuex-cuer
 ```
 
-### Compiles and hot-reloads for development
+### 使用
+- `tsconfig.json` 关闭 `strict`
 ```
-yarn serve
+{
+  //"strict": true,
+}
 ```
-
-### Compiles and minifies for production
-```
-yarn build
-```
-
-### Run your unit tests
-```
-yarn test:unit
 ```
 
-### Lints and fixes files
 ```
-yarn lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).

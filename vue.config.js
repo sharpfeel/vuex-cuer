@@ -40,9 +40,6 @@ const config = {
    */
   chainWebpack: config => {
     config.output.filename("[name].js");
-    //config.module.rules.clear();
-    config.module.rule("ts").use("cache-loader");
-    config.module.rule("ts").use("ts-loader");
   }
 };
 
