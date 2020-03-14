@@ -1,11 +1,12 @@
 {
   "name": "vuex-cuer",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "description": "vuex 提示插件",
+  "main": "./src/index.ts",
   "scripts": {
-    "serve": "vue-cli-service serve",
+    "dev": "vue-cli-service build --mode development",
     "build": "vue-cli-service build",
-    "test:unit": "vue-cli-service test:unit",
+    "test": "vue-cli-service test:unit",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
@@ -31,38 +32,6 @@
     "prettier": "^1.19.1",
     "typescript": "~3.7.5"
   },
-  "eslintConfig": {
-    "root": true,
-    "env": {
-      "node": true
-    },
-    "extends": [
-      "plugin:vue/essential",
-      "eslint:recommended",
-      "@vue/typescript/recommended",
-      "@vue/prettier",
-      "@vue/prettier/@typescript-eslint"
-    ],
-    "parserOptions": {
-      "ecmaVersion": 2020
-    },
-    "rules": {},
-    "overrides": [
-      {
-        "files": [
-          "**/__tests__/*.{j,t}s?(x)",
-          "**/tests/unit/**/*.spec.{j,t}s?(x)"
-        ],
-        "env": {
-          "mocha": true
-        }
-      }
-    ]
-  },
-  "browserslist": [
-    "> 1%",
-    "last 2 versions"
-  ],
   "gitHooks": {
     "pre-commit": "lint-staged"
   },

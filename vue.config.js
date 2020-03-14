@@ -13,7 +13,7 @@ const Configuration = webpack.Compiler.prototype.options;
 const base = {
   mode: "production",
   entry: {
-    app: "./src/index.ts"
+    index: "./src/index.ts"
   },
   externals: {
     vue: "Vue",
@@ -33,6 +33,7 @@ const config = {
    */
   configureWebpack: config => {
     //todo ...
+    config.optimization.minimize = config.mode == "production";
     Object.assign(config, base);
   },
   /**
@@ -40,6 +41,11 @@ const config = {
    */
   chainWebpack: config => {
     config.output.filename("[name].js");
+    config.output.libraryTarget("umd");
+    const tsRule = config.module.rule("ts");
+    config.module.rules.clear();
+    config.module.rules.set("ts", tsRule);
+    config.optimization.splitChunks(false);
   }
 };
 
