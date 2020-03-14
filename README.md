@@ -19,7 +19,7 @@ yarn install vuex-cuer
 （请注意注释的规范）
 ```javascript
 /* eslint-disable no-unused-vars */
-import { Mutations, Actions, StoreCuer } from "../src/index";
+import { Mutations, Actions, StoreCuer } from "vuex-cuer";
 
 const state = {
   v: 1
@@ -71,7 +71,7 @@ export default cuer;
 
 - 在 ts 中使用：创建一个`test.store.ts`文件
 ```typescript
-import { Mutations, Actions, StoreCuer } from "../src/index";
+import { Mutations, Actions, StoreCuer } from "vuex-cuer";
 
 const state = {
   v: 1
