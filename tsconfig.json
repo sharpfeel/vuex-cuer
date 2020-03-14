@@ -22,7 +22,8 @@
     },
     "lib": [
       "esnext",
-      "scripthost"
+      "scripthost",
+      "dom"
     ]
   },
   "include": [

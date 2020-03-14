@@ -26,7 +26,8 @@ class TestActions extends Actions {
    */
   test2() {
     this.state.v++;
-    this.cuer.commit.test1();
+    this.cuer.commits.test1();
+    this.cuer.commit("test1");
   }
 }
 
@@ -37,6 +38,9 @@ const cuer = new StoreCuer(state, {
   mutations: new TestMutations(),
   actions: new TestActions()
 });
+
+cuer.dispatchs.test2();
+cuer.dispatch("test2");
 
 export default cuer;
 

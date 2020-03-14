@@ -1,4 +1,7 @@
-import { ActionContext, ActionTree, MutationTree, Store } from "vuex";
+import Vuex, { ActionContext, ActionTree, MutationTree, Store } from "vuex";
+import Vue from "vue";
+
+Vue.use(Vuex);
 
 interface IState<S> {
   state: S;
@@ -15,22 +18,36 @@ abstract class ICuer<T extends IState<unknown>> {
   protected cuer!: T;
 }
 
-export class Mutations<T extends IState<unknown>> extends ICuer<T> {
-  [key: string]: Func | T["state"] | T;
+/**
+ * commit 方法集合
+ */
+export class Mutations<T extends IState<unknown>> extends ICuer<T> {}
+
+/**
+ * dispatch 方法集合
+ */
+export class Actions<T extends IState<unknown>> extends ICuer<T> {}
+
+function keys(obj?: ICuer<IState<unknown>>) {
+  if (obj != null) {
+    return Object.getOwnPropertyNames(Object.getPrototypeOf(obj)).filter(
+      v => v != "constructor"
+    );
+  }
+  return [];
 }
 
-export class Actions<T extends IState<unknown>> extends ICuer<T> {
-  [key: string]: Func | T["state"] | T;
-}
-
+/**
+ * store 提示类
+ */
 export class StoreCuer<
   S,
   M extends Mutations<IState<unknown>>,
   A extends Actions<IState<unknown>>
 > {
   readonly store!: Store<S>;
-  readonly commit!: M;
-  readonly dispatch!: A;
+  readonly commits!: M;
+  readonly dispatchs!: A;
   constructor(
     readonly state: S,
     options?: {
@@ -47,38 +64,39 @@ export class StoreCuer<
     const _as: T = {};
     const dispatchs = options?.actions;
 
+    const commitKeys = keys(commits) as Extract<keyof M, string>[];
+
     if (commits) {
-      for (const key in commits) {
-        _ms[key] = commits[key] as Func;
+      const commitScope = Object.assign(commits, {
+        cuer: this
+      });
+
+      commitKeys.forEach(key => {
+        _ms[key] = (commits[key] as unknown) as Func;
         if (_ms[key]) {
-          mutations[key] = (state: S, payload?: unknown) =>
-            _ms[key].call(
-              {
-                state,
-                commit: this.commit,
-                dispatch: this.dispatch
-              },
-              payload
-            );
+          mutations[key] = (state: S, payload?: unknown) => {
+            _ms[key].call(Object.assign(commitScope, { state }), payload);
+          };
         }
-      }
+      });
     }
 
+    const dispatchKeys = keys(dispatchs) as Extract<keyof A, string>[];
+
     if (dispatchs) {
-      for (const key in dispatchs) {
-        _as[key] = dispatchs[key] as Func;
+      const dispatchScope = Object.assign(dispatchs, {
+        cuer: this
+      });
+      dispatchKeys.forEach(key => {
+        _as[key] = (dispatchs[key] as unknown) as Func;
         if (_as[key]) {
           actions[key] = (injectee: ActionContext<S, S>, payload?: unknown) =>
             _as[key].call(
-              {
-                state: injectee.state,
-                commit: this.commit,
-                dispatch: this.dispatch
-              },
+              Object.assign(dispatchScope, { state: injectee.state }),
               payload
             );
         }
-      }
+      });
     }
 
     this.store = new Store({
@@ -87,28 +105,48 @@ export class StoreCuer<
       actions
     });
 
+    console.log("[vuex-cuer]", {
+      state: state,
+      mutations: commitKeys,
+      actions: dispatchKeys
+    });
+
     if (commits) {
-      for (const key in commits) {
-        if (commits[key] as Func) {
-          commits[key] = ((payload?: unknown) =>
-            this.store.commit(key, payload)) as M[Extract<keyof M, string>];
+      commitKeys.forEach(key => {
+        if (commits[key] instanceof Function) {
+          commits[key] = (((payload?: unknown) =>
+            this.store.commit(key, payload)) as unknown) as M[Extract<
+            keyof M,
+            string
+          >];
         }
-      }
+      });
       if (options?.mutations) {
-        this.commit = options.mutations;
+        this.commits = options.mutations;
       }
     }
 
     if (dispatchs) {
-      for (const key in dispatchs) {
-        if (dispatchs[key] as Func) {
-          dispatchs[key] = ((payload?: unknown) =>
-            this.store.dispatch(key, payload)) as A[Extract<keyof A, string>];
+      dispatchKeys.forEach(key => {
+        if (dispatchs[key] instanceof Function) {
+          dispatchs[key] = (((payload?: unknown) =>
+            this.store.dispatch(key, payload)) as unknown) as A[Extract<
+            keyof A,
+            string
+          >];
         }
-      }
+      });
       if (options?.actions) {
-        this.dispatch = options.actions;
+        this.dispatchs = options.actions;
       }
     }
+  }
+
+  commit(key: Extract<keyof M, string>, payload?: unknown) {
+    return this.store.commit(key, payload);
+  }
+
+  dispatch(key: Extract<keyof A, string>, payload?: unknown) {
+    return this.store.dispatch(key, payload);
   }
 }
