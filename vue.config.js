@@ -12,9 +12,7 @@ const Configuration = webpack.Compiler.prototype.options;
  */
 const base = {
   mode: "production",
-  entry: {
-    index: "./src/index.ts"
-  },
+  entry: "./src/index.ts",
   externals: {
     vue: "Vue",
     vuex: "Vuex"
@@ -40,7 +38,7 @@ const config = {
    * @param { WebpackChain } config
    */
   chainWebpack: config => {
-    config.output.filename("[name].js");
+    config.output.filename("index.js");
     config.output.libraryTarget("umd");
     const tsRule = config.module.rule("ts");
     config.module.rules.clear();

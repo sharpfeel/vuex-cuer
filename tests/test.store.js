@@ -13,7 +13,7 @@ class TestMutations extends Mutations {
    * test1
    */
   test1() {
-    //todo test1
+    this.state.v++;
   }
 }
 
@@ -25,7 +25,7 @@ class TestActions extends Actions {
    * test2
    */
   test2() {
-    //todo test2
+    this.state.v++;
     this.cuer.commit.test1();
   }
 }

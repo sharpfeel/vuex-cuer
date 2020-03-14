@@ -8,13 +8,14 @@ type TestState = typeof state;
 
 class TestMutations extends Mutations<TestCuer> {
   test1() {
-    //todo test1
+    this.state.v++;
   }
 }
 
 class TestActions extends Actions<TestCuer> {
   test2() {
-    //todo
+    this.state.v++;
+    this.cuer.commit.test1();
   }
 }
 

@@ -19,7 +19,7 @@ yarn install vuex-cuer
 （请注意注释的规范）
 ```javascript
 /* eslint-disable no-unused-vars */
-import { Mutations, Actions, StoreCuer } from "vuex-cuer";
+import { Mutations, Actions, StoreCuer } from "../src/index";
 
 const state = {
   v: 1
@@ -33,7 +33,7 @@ class TestMutations extends Mutations {
    * test1
    */
   test1() {
-    //todo test1
+    this.state.v++;
   }
 }
 
@@ -45,7 +45,7 @@ class TestActions extends Actions {
    * test2
    */
   test2() {
-    //todo test2
+    this.state.v++;
     this.cuer.commit.test1();
   }
 }
@@ -66,12 +66,13 @@ export default cuer;
 /**
  * @typedef { typeof cuer } TestCuer
  */
+
 ```
 <br>
 
 - 在 ts 中使用：创建一个`test.store.ts`文件
 ```typescript
-import { Mutations, Actions, StoreCuer } from "vuex-cuer";
+import { Mutations, Actions, StoreCuer } from "../src/index";
 
 const state = {
   v: 1
@@ -81,13 +82,14 @@ type TestState = typeof state;
 
 class TestMutations extends Mutations<TestCuer> {
   test1() {
-    //todo test1
+    this.state.v++;
   }
 }
 
 class TestActions extends Actions<TestCuer> {
   test2() {
-    //todo
+    this.state.v++;
+    this.cuer.commit.test1();
   }
 }
 
