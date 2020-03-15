@@ -70,6 +70,6 @@ class TestStore extends Cuer.StoreCuer<
 
 const store = new TestStore();
 
-store.commits.mutation1(); //通过store调用
+store.dispatchs.action1(); //通过store调用
 
 export default store;
