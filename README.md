@@ -27,7 +27,7 @@ yarn install vuex-cuer
 （请注意`jsdoc`注释的规范）
 ```javascript
 /* eslint-disable no-unused-vars */
-import { Mutations, Actions, StoreCuer } from "../src/index";
+import Cuer from "../src/index";
 
 const state = {
   /**
@@ -37,9 +37,9 @@ const state = {
 };
 
 /**
- * @extends Mutations<TestCuer>
+ * @extends Cuer.Mutations<TestCuer>
  */
-class TestMutations extends Mutations {
+class Mutations extends Cuer.Mutations {
   /**
    * test1
    */
@@ -49,9 +49,9 @@ class TestMutations extends Mutations {
 }
 
 /**
- * @extends Actions<TestCuer>
+ * @extends Cuer.Actions<TestCuer>
  */
-class TestActions extends Actions {
+class Actions extends Cuer.Actions {
   /**
    * test2
    */
@@ -70,11 +70,11 @@ const getters = {
 };
 
 /**
- * @type { StoreCuer<State,TestMutations,TestActions,Getters> }
+ * @type { Cuer.StoreCuer<State,Mutations,Actions,Getters> }
  */
-const cuer = new StoreCuer(state, {
-  mutations: new TestMutations(),
-  actions: new TestActions(),
+const cuer = new Cuer.StoreCuer(state, {
+  mutations: new Mutations(),
+  actions: new Actions(),
   getters
 });
 
@@ -93,13 +93,16 @@ export default cuer;
  * @typedef { typeof cuer } TestCuer
  */
 
-
 ```
 <br>
 
+
+
+
+
 - 在 ts 中使用：创建一个`test.store.ts`文件
 ```typescript
-import { Mutations, Actions, StoreCuer } from "../src/index";
+import Cuer from "../src/index";
 
 const state = {
   /**
@@ -108,7 +111,7 @@ const state = {
   v: 1
 };
 
-class TestMutations extends Mutations<TestStore> {
+class Mutations extends Cuer.Mutations<TestStore> {
   /**
    * mutation1
    */
@@ -127,7 +130,7 @@ class TestMutations extends Mutations<TestStore> {
   }
 }
 
-class TestActions extends Actions<TestStore> {
+class Actions extends Cuer.Actions<TestStore> {
   /**
    * action1
    */
@@ -154,16 +157,16 @@ const getters = {
   v: () => 1
 };
 
-class TestStore extends StoreCuer<
+class TestStore extends Cuer.StoreCuer<
   typeof state,
-  TestMutations,
-  TestActions,
+  Mutations,
+  Actions,
   typeof getters
-> {
+  > {
   constructor() {
     super(state, {
-      mutations: new TestMutations(),
-      actions: new TestActions(),
+      mutations: new Mutations(),
+      actions: new Actions(),
       getters
     });
   }
@@ -174,6 +177,5 @@ const store = new TestStore();
 store.commits.mutation1(); //通过store调用
 
 export default store;
-
 
 ```

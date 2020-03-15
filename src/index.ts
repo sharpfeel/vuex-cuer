@@ -11,6 +11,7 @@ import Vuex, {
 import Vue from "vue";
 
 Vue.use(Vuex);
+
 /**
  * 函数通用类型
  */
@@ -78,7 +79,7 @@ interface DispatchEx<A> extends Dispatch {
 /**
  * getters方法扩展
  */
-export type GettersEx<T extends FuncTree> = {
+type GettersEx<T extends FuncTree> = {
   [P in keyof T]: ReturnType<T[P]>;
 };
 
@@ -195,3 +196,9 @@ export class StoreCuer<
     }
   }
 }
+
+export default {
+  Mutations,
+  Actions,
+  StoreCuer
+};

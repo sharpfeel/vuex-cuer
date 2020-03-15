@@ -1,4 +1,4 @@
-import { Mutations, Actions, StoreCuer } from "../src/index";
+import Cuer from "../src/index";
 
 const state = {
   /**
@@ -7,7 +7,7 @@ const state = {
   v: 1
 };
 
-class TestMutations extends Mutations<TestStore> {
+class Mutations extends Cuer.Mutations<TestStore> {
   /**
    * mutation1
    */
@@ -26,7 +26,7 @@ class TestMutations extends Mutations<TestStore> {
   }
 }
 
-class TestActions extends Actions<TestStore> {
+class Actions extends Cuer.Actions<TestStore> {
   /**
    * action1
    */
@@ -53,16 +53,16 @@ const getters = {
   v: () => 1
 };
 
-class TestStore extends StoreCuer<
+class TestStore extends Cuer.StoreCuer<
   typeof state,
-  TestMutations,
-  TestActions,
+  Mutations,
+  Actions,
   typeof getters
 > {
   constructor() {
     super(state, {
-      mutations: new TestMutations(),
-      actions: new TestActions(),
+      mutations: new Mutations(),
+      actions: new Actions(),
       getters
     });
   }

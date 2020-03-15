@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import { Mutations, Actions, StoreCuer } from "../src/index";
+import Cuer from "../src/index";
 
 const state = {
   /**
@@ -9,9 +9,9 @@ const state = {
 };
 
 /**
- * @extends Mutations<TestCuer>
+ * @extends Cuer.Mutations<TestCuer>
  */
-class TestMutations extends Mutations {
+class Mutations extends Cuer.Mutations {
   /**
    * test1
    */
@@ -21,9 +21,9 @@ class TestMutations extends Mutations {
 }
 
 /**
- * @extends Actions<TestCuer>
+ * @extends Cuer.Actions<TestCuer>
  */
-class TestActions extends Actions {
+class Actions extends Cuer.Actions {
   /**
    * test2
    */
@@ -42,11 +42,11 @@ const getters = {
 };
 
 /**
- * @type { StoreCuer<State,TestMutations,TestActions,Getters> }
+ * @type { Cuer.StoreCuer<State,Mutations,Actions,Getters> }
  */
-const cuer = new StoreCuer(state, {
-  mutations: new TestMutations(),
-  actions: new TestActions(),
+const cuer = new Cuer.StoreCuer(state, {
+  mutations: new Mutations(),
+  actions: new Actions(),
   getters
 });
 
