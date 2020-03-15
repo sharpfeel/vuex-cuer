@@ -34,12 +34,12 @@ abstract class ICuer<T extends IState<unknown>> {
 }
 
 /**
- * commit 方法集合
+ * commit 方法集合类
  */
 export class Mutations<T extends IState<unknown>> extends ICuer<T> {}
 
 /**
- * dispatch 方法集合
+ * dispatch 方法集合类
  */
 export class Actions<T extends IState<unknown>> extends ICuer<T> {}
 
@@ -198,7 +198,16 @@ export class StoreCuer<
 }
 
 export default {
+  /**
+   * commit 方法集合类
+   */
   Mutations,
+  /**
+   * dispatch 方法集合类
+   */
   Actions,
+  /**
+   * store 提示类
+   */
   StoreCuer
 };
