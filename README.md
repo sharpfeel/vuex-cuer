@@ -4,16 +4,6 @@
 Vuex的 `commit` 和 `dispatch` 没有友好的提示，大项目难以维护。如何避免，使用 `vuex-cuer`
 <br>
 
-### 安装
-```
-//npm
-npm install vuex-cuer
-
-//yarn
-yarn install vuex-cuer
-```
-<br>
-
 ### 效果
 1. 推荐直接通过`commits`调用函数，因为这样有能查看到原函数的注释<br><br>
 ![Image text](./result/1.png)<br>
@@ -27,7 +17,7 @@ yarn install vuex-cuer
 （请注意`jsdoc`注释的规范）
 ```javascript
 /* eslint-disable no-unused-vars */
-import Cuer from "../src/index";
+import * as Cuer from "../src/index";
 
 const state = {
   /**
@@ -102,7 +92,7 @@ export default cuer;
 
 - 在 ts 中使用：创建一个`test.store.ts`文件
 ```typescript
-import Cuer from "../src/index";
+import * as Cuer from "../src/index";
 
 const state = {
   /**
@@ -162,7 +152,7 @@ class TestStore extends Cuer.StoreCuer<
   Mutations,
   Actions,
   typeof getters
-  > {
+> {
   constructor() {
     super(state, {
       mutations: new Mutations(),
@@ -179,3 +169,22 @@ store.commits.mutation1(); //通过store调用
 export default store;
 
 ```
+<br>
+
+
+
+- 如果没有 `mutations` 、 `actions` 或者 `getters` 如何继承
+```typescript
+class TestStore extends Cuer.StoreCuer<
+  typeof state,
+  Cuer.Empty,
+  Cuer.Empty,
+  Cuer.Empty
+> {
+  constructor() {
+    super(state, {
+    });
+  }
+}
+```
+<br>

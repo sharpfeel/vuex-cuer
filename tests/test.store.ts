@@ -1,4 +1,4 @@
-import Cuer from "../src/index";
+import * as Cuer from "../src/index";
 
 const state = {
   /**

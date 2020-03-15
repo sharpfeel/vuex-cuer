@@ -33,6 +33,8 @@ abstract class ICuer<T extends IState<unknown>> {
   protected store!: T;
 }
 
+export type Empty = ICuer<IState<unknown>> & FuncTree;
+
 /**
  * commit 方法集合类
  */
@@ -88,8 +90,8 @@ type GettersEx<T extends FuncTree> = {
  */
 export class StoreCuer<
   S,
-  M extends Mutations<IState<unknown>>,
-  A extends Actions<IState<unknown>>,
+  M extends ICuer<IState<unknown>>,
+  A extends ICuer<IState<unknown>>,
   G extends GetterTree<S, S>
 > extends Store<S> {
   readonly commits!: M;
@@ -150,7 +152,9 @@ export class StoreCuer<
       state: state,
       mutations,
       actions,
-      getters: options?.getters
+      getters: options?.getters,
+      plugins: options?.plugins,
+      strict: options?.strict
     });
 
     console.log("[vuex-cuer]", {
@@ -196,18 +200,3 @@ export class StoreCuer<
     }
   }
 }
-
-export default {
-  /**
-   * commit 方法集合类
-   */
-  Mutations,
-  /**
-   * dispatch 方法集合类
-   */
-  Actions,
-  /**
-   * store 提示类
-   */
-  StoreCuer
-};
