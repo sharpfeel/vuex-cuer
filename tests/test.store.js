@@ -2,6 +2,9 @@
 import { Mutations, Actions, StoreCuer } from "../src/index";
 
 const state = {
+  /**
+   * state.v
+   */
   v: 1
 };
 
@@ -26,17 +29,25 @@ class TestActions extends Actions {
    */
   test2() {
     this.state.v++;
-    this.cuer.commits.test1();
-    this.cuer.commit("test1");
+    this.store.commits.test1();
+    this.store.commit("test1");
   }
 }
 
+const getters = {
+  /**
+   * getters.v
+   */
+  v: () => 1
+};
+
 /**
- * @type { StoreCuer<State,TestMutations,TestActions> }
+ * @type { StoreCuer<State,TestMutations,TestActions,Getters> }
  */
 const cuer = new StoreCuer(state, {
   mutations: new TestMutations(),
-  actions: new TestActions()
+  actions: new TestActions(),
+  getters
 });
 
 cuer.dispatchs.test2();
@@ -46,6 +57,9 @@ export default cuer;
 
 /**
  * @typedef { typeof state } State
+ */
+/**
+ * @typedef { typeof getters } Getters
  */
 /**
  * @typedef { typeof cuer } TestCuer

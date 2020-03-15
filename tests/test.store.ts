@@ -1,49 +1,75 @@
 import { Mutations, Actions, StoreCuer } from "../src/index";
 
 const state = {
+  /**
+   * state.v
+   */
   v: 1
 };
 
-type TestState = typeof state;
-
-class TestMutations extends Mutations<TestCuer> {
+class TestMutations extends Mutations<TestStore> {
   /**
-   * 测试1
+   * mutation1
    */
-  test1() {
-    this.state.v++;
+  mutation1() {
+    this.state.v++; //操作state
   }
 
   /**
-   * 测试2
+   * mutation2
    */
-  test2() {
-    this.state.v += 2;
+  mutation2(v: number) {
+    this.state.v += v; //操作state
+    this.mutation1(); //调用同级函数
+    this.store.commits.mutation1(); //通过commits调用同级函数
+    this.store.commit("mutation1"); //通过commit函数调用同级函数
   }
 }
 
-class TestActions extends Actions<TestCuer> {
-  test1() {
+class TestActions extends Actions<TestStore> {
+  /**
+   * action1
+   */
+  action1() {
     this.state.v++;
   }
 
-  test2() {
+  /**
+   * action2
+   */
+  action2() {
     this.state.v++;
-    this.test1();
-    this.cuer.commits.test1();
-    this.cuer.commit("test1");
+    this.action1();
+    this.store.commits.mutation2(1);
+    this.store.commit("mutation1");
+    this.store.dispatch("test2");
   }
 }
 
-class TestCuer extends StoreCuer<TestState, TestMutations, TestActions> {
+const getters = {
+  /**
+   * getters.v
+   */
+  v: () => 1
+};
+
+class TestStore extends StoreCuer<
+  typeof state,
+  TestMutations,
+  TestActions,
+  typeof getters
+> {
   constructor() {
     super(state, {
       mutations: new TestMutations(),
-      actions: new TestActions()
+      actions: new TestActions(),
+      getters
     });
   }
 }
 
-const cuer = new TestCuer();
+const store = new TestStore();
 
-export default cuer;
+store.commits.mutation1(); //通过store调用
+
+export default store;

@@ -1,21 +1,35 @@
-import Vuex, { ActionContext, ActionTree, MutationTree, Store } from "vuex";
+import Vuex, {
+  ActionContext,
+  ActionTree,
+  MutationTree,
+  Store,
+  Dispatch,
+  Commit,
+  GetterTree,
+  StoreOptions
+} from "vuex";
 import Vue from "vue";
 
 Vue.use(Vuex);
+/**
+ * 函数通用类型
+ */
+type Func = (...args: unknown[]) => unknown;
+
+/**
+ * 函数通用类型集合
+ */
+interface FuncTree {
+  [key: string]: Func;
+}
 
 interface IState<S> {
   state: S;
 }
 
-type Func = (payload?: unknown) => unknown;
-
-interface FuncTree {
-  [key: string]: Func;
-}
-
 abstract class ICuer<T extends IState<unknown>> {
   protected state!: T["state"];
-  protected cuer!: T;
+  protected store!: T;
 }
 
 /**
@@ -28,6 +42,10 @@ export class Mutations<T extends IState<unknown>> extends ICuer<T> {}
  */
 export class Actions<T extends IState<unknown>> extends ICuer<T> {}
 
+/**
+ * 获取`ICuer`对象上的原链函数
+ * @param obj
+ */
 function keys(obj?: ICuer<IState<unknown>>) {
   if (obj != null) {
     return Object.getOwnPropertyNames(Object.getPrototypeOf(obj)).filter(
@@ -38,21 +56,56 @@ function keys(obj?: ICuer<IState<unknown>>) {
 }
 
 /**
+ * commit方法扩展
+ */
+interface CommitEx<M> extends Commit {
+  <T extends Extract<keyof M, string>>(
+    key: T,
+    payload: Parameters<Extract<M[T], Func>>[0]
+  ): unknown;
+}
+
+/**
+ * dispatch方法扩展
+ */
+interface DispatchEx<A> extends Dispatch {
+  <T extends Extract<keyof A, string>>(
+    key: T,
+    payload: Parameters<Extract<A[T], Func>>[0]
+  ): Promise<unknown>;
+}
+
+/**
+ * getters方法扩展
+ */
+export type GettersEx<T extends FuncTree> = {
+  [P in keyof T]: ReturnType<T[P]>;
+};
+
+/**
  * store 提示类
  */
 export class StoreCuer<
   S,
   M extends Mutations<IState<unknown>>,
-  A extends Actions<IState<unknown>>
-> {
-  readonly store!: Store<S>;
+  A extends Actions<IState<unknown>>,
+  G extends GetterTree<S, S>
+> extends Store<S> {
   readonly commits!: M;
   readonly dispatchs!: A;
+
+  commit!: CommitEx<M>;
+  dispatch!: DispatchEx<A>;
+  getters!: GettersEx<G>;
+
   constructor(
-    readonly state: S,
+    state: S,
     options?: {
       mutations?: M;
       actions?: A;
+      getters?: G;
+      plugins?: StoreOptions<S>["plugins"];
+      strict?: StoreOptions<S>["strict"];
     }
   ) {
     type T = FuncTree;
@@ -67,15 +120,11 @@ export class StoreCuer<
     const commitKeys = keys(commits) as Extract<keyof M, string>[];
 
     if (commits) {
-      const commitScope = Object.assign(commits, {
-        cuer: this
-      });
-
       commitKeys.forEach(key => {
         _ms[key] = (commits[key] as unknown) as Func;
         if (_ms[key]) {
           mutations[key] = (state: S, payload?: unknown) => {
-            _ms[key].call(Object.assign(commitScope, { state }), payload);
+            _ms[key].call(Object.assign(this.commits, { state }), payload);
           };
         }
       });
@@ -84,25 +133,23 @@ export class StoreCuer<
     const dispatchKeys = keys(dispatchs) as Extract<keyof A, string>[];
 
     if (dispatchs) {
-      const dispatchScope = Object.assign(dispatchs, {
-        cuer: this
-      });
       dispatchKeys.forEach(key => {
         _as[key] = (dispatchs[key] as unknown) as Func;
         if (_as[key]) {
           actions[key] = (injectee: ActionContext<S, S>, payload?: unknown) =>
             _as[key].call(
-              Object.assign(dispatchScope, { state: injectee.state }),
+              Object.assign(this.dispatchs, { state: injectee.state }),
               payload
             );
         }
       });
     }
 
-    this.store = new Store({
+    super({
       state: state,
       mutations,
-      actions
+      actions,
+      getters: options?.getters
     });
 
     console.log("[vuex-cuer]", {
@@ -115,7 +162,7 @@ export class StoreCuer<
       commitKeys.forEach(key => {
         if (commits[key] instanceof Function) {
           commits[key] = (((payload?: unknown) =>
-            this.store.commit(key, payload)) as unknown) as M[Extract<
+            this.commit(key, payload)) as unknown) as M[Extract<
             keyof M,
             string
           >];
@@ -123,6 +170,9 @@ export class StoreCuer<
       });
       if (options?.mutations) {
         this.commits = options.mutations;
+        Object.assign(this.commits, {
+          store: this
+        });
       }
     }
 
@@ -130,7 +180,7 @@ export class StoreCuer<
       dispatchKeys.forEach(key => {
         if (dispatchs[key] instanceof Function) {
           dispatchs[key] = (((payload?: unknown) =>
-            this.store.dispatch(key, payload)) as unknown) as A[Extract<
+            this.dispatch(key, payload)) as unknown) as A[Extract<
             keyof A,
             string
           >];
@@ -138,15 +188,10 @@ export class StoreCuer<
       });
       if (options?.actions) {
         this.dispatchs = options.actions;
+        Object.assign(this.dispatchs, {
+          store: this
+        });
       }
     }
-  }
-
-  commit(key: Extract<keyof M, string>, payload?: unknown) {
-    return this.store.commit(key, payload);
-  }
-
-  dispatch(key: Extract<keyof A, string>, payload?: unknown) {
-    return this.store.dispatch(key, payload);
   }
 }
