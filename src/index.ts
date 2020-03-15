@@ -14,7 +14,7 @@ Vue.use(Vuex);
 /**
  * 函数通用类型
  */
-type Func = (...args: unknown[]) => unknown;
+type Func = (...args: any) => unknown;
 
 /**
  * 函数通用类型集合

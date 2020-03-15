@@ -22,6 +22,9 @@ yarn install vuex-cuer
 import { Mutations, Actions, StoreCuer } from "../src/index";
 
 const state = {
+  /**
+   * state.v
+   */
   v: 1
 };
 
@@ -46,17 +49,29 @@ class TestActions extends Actions {
    */
   test2() {
     this.state.v++;
-    this.cuer.commit.test1();
+    this.store.commits.test1();
+    this.store.commit("test1");
   }
 }
 
+const getters = {
+  /**
+   * getters.v
+   */
+  v: () => 1
+};
+
 /**
- * @type { StoreCuer<State,TestMutations,TestActions> }
+ * @type { StoreCuer<State,TestMutations,TestActions,Getters> }
  */
 const cuer = new StoreCuer(state, {
   mutations: new TestMutations(),
-  actions: new TestActions()
+  actions: new TestActions(),
+  getters
 });
+
+cuer.dispatchs.test2();
+cuer.dispatch("test2");
 
 export default cuer;
 
@@ -64,15 +79,19 @@ export default cuer;
  * @typedef { typeof state } State
  */
 /**
+ * @typedef { typeof getters } Getters
+ */
+/**
  * @typedef { typeof cuer } TestCuer
  */
+
 
 ```
 <br>
 
 - 在 ts 中使用：创建一个`test.store.ts`文件
 ```typescript
-import { Mutations, Actions, StoreCuer } from "vuex-cuer";
+import { Mutations, Actions, StoreCuer } from "../src/index";
 
 const state = {
   /**
@@ -81,7 +100,7 @@ const state = {
   v: 1
 };
 
-class _Mutations extends Mutations<TestStore> {
+class TestMutations extends Mutations<TestStore> {
   /**
    * mutation1
    */
@@ -100,7 +119,7 @@ class _Mutations extends Mutations<TestStore> {
   }
 }
 
-class _Actions extends Actions<TestStore> {
+class TestActions extends Actions<TestStore> {
   /**
    * action1
    */
@@ -116,7 +135,7 @@ class _Actions extends Actions<TestStore> {
     this.action1();
     this.store.commits.mutation2(1);
     this.store.commit("mutation1");
-    this.store.dispatch("test2")
+    this.store.dispatch("test2");
   }
 }
 
@@ -124,24 +143,29 @@ const getters = {
   /**
    * getters.v
    */
-  v: () => 1,
+  v: () => 1
 };
 
-class TestStore extends StoreCuer<typeof state, _Mutations, _Actions, typeof getters>{
+class TestStore extends StoreCuer<
+  typeof state,
+  TestMutations,
+  TestActions,
+  typeof getters
+> {
   constructor() {
     super(state, {
-      mutations: new _Mutations(),
-      actions: new _Actions(),
-      getters,
+      mutations: new TestMutations(),
+      actions: new TestActions(),
+      getters
     });
   }
 }
-
 
 const store = new TestStore();
 
 store.commits.mutation1(); //通过store调用
 
 export default store;
+
 
 ```

@@ -2,6 +2,11 @@
   "name": "vuex-cuer",
   "version": "0.1.2",
   "description": "vuex 提示插件",
+  "keywords": [
+    "vuex",
+    "vuex plugin",
+    "vuex cue"
+  ],
   "main": "./src/index.ts",
   "scripts": {
     "dev": "vue-cli-service build --mode development",
@@ -40,5 +45,16 @@
       "vue-cli-service lint",
       "git add"
     ]
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@gitee.com:sharp-feel/vuex-cuer.git"
+  },
+  "homepage": "https://gitee.com/sharp-feel/vuex-cuer",
+  "bug": {
+    "url": "https://gitee.com/sharp-feel/vuex-cuer/issues",
+    "email": "1131762828@qq.com"
+  },
+  "author": "sharp-feel",
+  "license": "ISC"
 }
