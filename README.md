@@ -173,13 +173,13 @@ export default store;
 
 
 
-- 如果没有 `mutations` 、 `actions` 或者 `getters` 如何继承
+- 如果没有 `mutations` 、 `actions` 或者 `getters` 如何继承：
+如果没有对象可以填充 `Cuer.EmptyICuer` 或 `any` 或者省略，类似于可选参数
 ```typescript
 class TestStore extends Cuer.StoreCuer<
   typeof state,
-  Cuer.Empty,
-  Cuer.Empty,
-  Cuer.Empty
+  Cuer.EmptyICuer,
+  Actions,
 > {
   constructor() {
     super(state, {

@@ -33,7 +33,10 @@ abstract class ICuer<T extends IState<unknown>> {
   protected store!: T;
 }
 
-export type Empty = ICuer<IState<unknown>> & FuncTree;
+/**
+ * 空的
+ */
+export type EmptyICuer = ICuer<IState<unknown>>;
 
 /**
  * commit 方法集合类
@@ -86,13 +89,26 @@ type GettersEx<T extends FuncTree> = {
 };
 
 /**
+ * todo:subscribe
+ * todo:subscribeAction
+ * todo:registerModule
+ * todo:unregisterModule
+ *
+ * todo:mapState
+ * todo:mapGetters
+ * todo:mapActions
+ * todo:mapMutations
+ *
+ */
+
+/**
  * store 提示类
  */
 export class StoreCuer<
   S,
-  M extends ICuer<IState<unknown>>,
-  A extends ICuer<IState<unknown>>,
-  G extends GetterTree<S, S>
+  M extends ICuer<IState<unknown>> = EmptyICuer,
+  A extends ICuer<IState<unknown>> = EmptyICuer,
+  G extends GetterTree<S, S> = FuncTree
 > extends Store<S> {
   readonly commits!: M;
   readonly dispatchs!: A;
