@@ -12,161 +12,89 @@ Vuex的 `commit` 和 `dispatch` 没有友好的提示，大项目难以维护。
 ![Image text](./result/2.png)<br>
 <br>
 
-### 使用
-- 在 js （`es6`） 中使用：创建一个`test.store.js`文件
-（请注意`jsdoc`注释的规范）
-```javascript
-/* eslint-disable no-unused-vars */
-import * as Cuer from "../src/index";
+### 用法
+1. class `Mutations`
+```typescript
+class Mutations extends Cuer.Mutations<ExampleStore> {
 
-const state = {
-  /**
-   * state.v
-   */
-  v: 1
-};
-
-/**
- * @extends Cuer.Mutations<TestCuer>
- */
-class Mutations extends Cuer.Mutations {
-  /**
-   * test1
-   */
-  test1() {
-    this.state.v++;
+  test(){
+    this.state.xxx //访问 state
+    this.store.getters.xxx //访问 getter
+    this.xxx //访问同一个类的函数
+    this.store.commit("xxx") //调用commit
+    this.store.commits.xxx //调用commit
   }
 }
+```
+<br>
 
-/**
- * @extends Cuer.Actions<TestCuer>
- */
-class Actions extends Cuer.Actions {
-  /**
-   * test2
-   */
-  test2() {
-    this.state.v++;
-    this.store.commits.test1();
-    this.store.commit("test1");
+2. class `Actions`
+```typescript
+class Actions extends Cuer.Actions<ExampleStore> {
+
+  test(){
+    this.state.xxx //访问 state
+    this.store.getters.xxx //访问 getter
+    this.xxx //访问同一个类的函数
+    this.store.commit("xxx", payload?) //调用 commit
+    this.store.commits.xxx(payload?) //调用 commit
+    this.store.dispatch("xxx", payload?) //调用 dispatch
+    this.store.dispatchs.xxx(payload?) //调用 dispatchs
   }
 }
-
-/**
- * @type { Cuer.StoreCuer<State,Mutations,Actions> }
- */
-const cuer = new Cuer.StoreCuer(state, {
-  mutations: new Mutations(),
-  actions: new Actions(),
-  getters
-});
-
-cuer.dispatchs.test2();
-cuer.dispatch("test2");
-
-export default cuer;
-
-/**
- * @typedef { typeof state } State
- */
-/**
- * @typedef { typeof cuer } TestCuer
- */
 
 ```
 <br>
 
-
-
-
-
-- 在 ts 中使用：创建一个`test.store.ts`文件
+3. class `Getters`
 ```typescript
-import * as Cuer from "../src/index";
+class Actions extends Cuer.Actions<ExampleStore> {
 
-const state = {
-  /**
-   * state.v
-   */
-  v: 1
-};
-
-class Mutations extends Cuer.Mutations<TestStore> {
-  /**
-   * mutation1
-   */
-  mutation1() {
-    this.state.v++; //操作state
-  }
-
-  /**
-   * mutation2
-   */
-  mutation2(v: number) {
-    this.state.v += v; //操作state
-    this.mutation1(); //调用同级函数
-    this.store.commits.mutation1(); //通过commits调用同级函数
-    this.store.commit("mutation1"); //通过commit函数调用同级函数
+  test(){
+    this.state.xxx //访问 state
+    this.getters.xxx //访问 getter
+    this.xxx //访问同一个类的getter （还有瑕疵）
   }
 }
 
-class Actions extends Cuer.Actions<TestStore> {
-  /**
-   * action1
-   */
-  action1() {
-    this.state.v++;
-  }
+```
+<br>
 
-  /**
-   * action2
-   */
-  action2() {
-    this.state.v++;
-    this.action1();
-    this.store.commits.mutation2(1);
-    this.store.commit("mutation1");
-    this.store.dispatch("test2");
-  }
-}
+4. class `StoreCuer`
+```typescript
+// `StoreCuer` 继承自 `vuex` 的 `Store`，支持除 `module` 之外的大部分内容
 
-class TestStore extends Cuer.StoreCuer<
+class ExampleStore extends Cuer.StoreCuer<
   typeof state,
   Mutations,
   Actions,
-  typeof getters
-> {
+  Getters
+  > {
   constructor() {
     super(state, {
       mutations: new Mutations(),
-      actions: new Actions()
+      actions: new Actions(),
+      getters: new Getters()
     });
   }
 }
 
-const store = new TestStore();
+const store = new ExampleStore();
 
-store.commits.mutation1(); //通过store调用
+store.state.xxx //访问 state
+store.getters.xxx //访问 getter
+store.xxx //访问 Store 的函数
+store.commit("xxx", payload?) //调用 commit（优化约束，以供代码提示）
+store.commits.xxx(payload?) //调用 commit
+store.dispatch("xxx", payload?) //调用 dispatch（优化约束，以供代码提示）
+store.dispatchs.xxx(payload?) //调用 dispatchs
+store.subscribe(fn) // （优化约束，以供代码提示）
+store.subscribeAction(fn) // （优化约束，以供代码提示）
+store.mapState(...keys) // （优化约束，以供代码提示）
+store.mapGetters(...keys) // （优化约束，以供代码提示）
+store.mapActions(...keys) // （优化约束，以供代码提示）
+store.mapMutations(...keys) // （优化约束，以供代码提示）
 
-export default store;
+// 注：mapState、mapGetters、mapActions、mapMutations 暂未找到精确约束的方法
 
 ```
-<br>
-
-
-
-- 如果没有 `mutations` 、 `actions` 或者 `getters` 如何继承：
-如果没有对象可以填充 `Cuer.EmptyICuer` 或 `any` 或者省略，类似于可选参数
-```typescript
-class TestStore extends Cuer.StoreCuer<
-  typeof state,
-  Cuer.EmptyICuer,
-  Actions,
-> {
-  constructor() {
-    super(state, {
-    });
-  }
-}
-```
-<br>
