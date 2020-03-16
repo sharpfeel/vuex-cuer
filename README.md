@@ -54,12 +54,14 @@ class Actions extends Cuer.Actions<ExampleStore> {
 
 3. class `Getters`
 ```typescript
-class Actions extends Cuer.Actions<ExampleStore> {
-
-  test(){
+class Getters extends Cuer.Actions<ExampleStore> {
+  //使用访问器来实现 getter
+  get test() {
     this.state.xxx //访问 state
     this.getters.xxx //访问 getter
     this.xxx //访问当前类的 getter
+
+    return xxx;
   }
 }
 
