@@ -89,7 +89,7 @@ export default {
     stateV() {
       return exampleStore.state.value;
     },
-    ...exampleStore.mapState("value")
+    ...exampleStore.mapGetters("value")
   },
   methods: {
     commitsAdd() {

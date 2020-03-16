@@ -4,6 +4,10 @@
 Vuex的 `commit` 和 `dispatch` 没有友好的提示，大项目难以维护。如何避免，使用 `vuex-cuer`
 <br>
 
+### 示例
+
+[example](https://gitee.com/sharp-feel/vuex-cuer/tree/master/src/example)
+
 ### 效果
 1. 推荐直接通过`commits`调用函数，因为这样有能查看到原函数的注释<br><br>
 ![Image text](./result/1.png)<br>

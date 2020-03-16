@@ -56,7 +56,7 @@ export class Actions<T extends IState> extends ICuer<T> {
  * dispatch 方法集合类
  */
 export class Getters<T extends IState> extends ICuer<T> {
-  [key: string]: (() => unknown) | T | T["state"];
+  //[key: string]: (() => unknown) | T | T["state"];
 }
 
 type KeyOf<T> = Extract<keyof T, string>;
