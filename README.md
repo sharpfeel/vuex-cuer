@@ -24,9 +24,9 @@ class Mutations extends Cuer.Mutations<ExampleStore> {
   test(){
     this.state.xxx //访问 state
     this.store.getters.xxx //访问 getter
-    this.xxx //访问同一个类的函数
-    this.store.commit("xxx") //调用commit
-    this.store.commits.xxx //调用commit
+    this.xxx //调用同一个类的 commit
+    this.store.commit("xxx") //调用 commit
+    this.store.commits.xxx //调用 commit
   }
 }
 ```
@@ -39,7 +39,7 @@ class Actions extends Cuer.Actions<ExampleStore> {
   test(){
     this.state.xxx //访问 state
     this.store.getters.xxx //访问 getter
-    this.xxx //访问同一个类的函数
+    this.xxx //调用同一个类的 dispatch
     this.store.commit("xxx", payload?) //调用 commit
     this.store.commits.xxx(payload?) //调用 commit
     this.store.dispatch("xxx", payload?) //调用 dispatch
@@ -57,7 +57,7 @@ class Actions extends Cuer.Actions<ExampleStore> {
   test(){
     this.state.xxx //访问 state
     this.getters.xxx //访问 getter
-    this.xxx //访问同一个类的getter （还有瑕疵）
+    this.xxx //访问同一个类的 getter （还有瑕疵）
   }
 }
 
@@ -88,16 +88,16 @@ const store = new ExampleStore();
 store.state.xxx //访问 state
 store.getters.xxx //访问 getter
 store.xxx //访问 Store 的函数
-store.commit("xxx", payload?) //调用 commit（优化约束，以供代码提示）
+store.commit("xxx", payload?) //调用 （优化约束，以强化提示）
 store.commits.xxx(payload?) //调用 commit
-store.dispatch("xxx", payload?) //调用 dispatch（优化约束，以供代码提示）
+store.dispatch("xxx", payload?) //调用 （优化约束，以强化提示）
 store.dispatchs.xxx(payload?) //调用 dispatchs
-store.subscribe(fn) // （优化约束，以供代码提示）
-store.subscribeAction(fn) // （优化约束，以供代码提示）
-store.mapState(...keys) // （优化约束，以供代码提示）
-store.mapGetters(...keys) // （优化约束，以供代码提示）
-store.mapActions(...keys) // （优化约束，以供代码提示）
-store.mapMutations(...keys) // （优化约束，以供代码提示）
+store.subscribe(fn) // （优化约束，以强化提示）
+store.subscribeAction(fn) // （优化约束，以强化提示）
+store.mapState(...keys) // （优化约束，以强化提示）
+store.mapGetters(...keys) // （优化约束，以强化提示）
+store.mapActions(...keys) // （优化约束，以强化提示）
+store.mapMutations(...keys) // （优化约束，以强化提示）
 
 // 注：mapState、mapGetters、mapActions、mapMutations 暂未找到精确约束的方法
 
