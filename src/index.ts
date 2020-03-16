@@ -15,44 +15,39 @@ Vue.use(Vuex);
 /**
  * 函数通用类型
  */
-type Func = (...args: any) => unknown;
+type Method = (...args: any) => unknown;
 
 /**
  * 函数通用类型集合
  */
-interface FuncTree {
-  [key: string]: Func;
+export interface Methods {
+  [key: string]: Method;
 }
 
-interface IState<S> {
+export interface IState<S = unknown> {
   state: S;
 }
 
-abstract class ICuer<T extends IState<unknown>> {
+export abstract class ICuer<T extends IState = IState> {
   protected state!: T["state"];
   protected store!: T;
 }
 
 /**
- * 空的
- */
-export type EmptyICuer = ICuer<IState<unknown>>;
-
-/**
  * commit 方法集合类
  */
-export class Mutations<T extends IState<unknown>> extends ICuer<T> {}
+export class Mutations<T extends IState> extends ICuer<T> {}
 
 /**
  * dispatch 方法集合类
  */
-export class Actions<T extends IState<unknown>> extends ICuer<T> {}
+export class Actions<T extends IState> extends ICuer<T> {}
 
 /**
  * 获取`ICuer`对象上的原链函数
  * @param obj
  */
-function keys(obj?: ICuer<IState<unknown>>) {
+function keys(obj?: ICuer) {
   if (obj != null) {
     return Object.getOwnPropertyNames(Object.getPrototypeOf(obj)).filter(
       v => v != "constructor"
@@ -67,7 +62,7 @@ function keys(obj?: ICuer<IState<unknown>>) {
 interface CommitEx<M> extends Commit {
   <T extends Extract<keyof M, string>>(
     key: T,
-    payload: Parameters<Extract<M[T], Func>>[0]
+    payload: Parameters<Extract<M[T], Method>>[0]
   ): unknown;
 }
 
@@ -77,14 +72,14 @@ interface CommitEx<M> extends Commit {
 interface DispatchEx<A> extends Dispatch {
   <T extends Extract<keyof A, string>>(
     key: T,
-    payload: Parameters<Extract<A[T], Func>>[0]
+    payload: Parameters<Extract<A[T], Method>>[0]
   ): Promise<unknown>;
 }
 
 /**
  * getters方法扩展
  */
-type GettersEx<T extends FuncTree> = {
+type GettersEx<T extends Methods> = {
   [P in keyof T]: ReturnType<T[P]>;
 };
 
@@ -106,9 +101,9 @@ type GettersEx<T extends FuncTree> = {
  */
 export class StoreCuer<
   S,
-  M extends ICuer<IState<unknown>> = EmptyICuer,
-  A extends ICuer<IState<unknown>> = EmptyICuer,
-  G extends GetterTree<S, S> = FuncTree
+  M extends ICuer = ICuer,
+  A extends ICuer = ICuer,
+  G extends GetterTree<S, S> = Methods
 > extends Store<S> {
   readonly commits!: M;
   readonly dispatchs!: A;
@@ -127,7 +122,7 @@ export class StoreCuer<
       strict?: StoreOptions<S>["strict"];
     }
   ) {
-    type T = FuncTree;
+    type T = Methods;
     const mutations: MutationTree<S> = {};
     const _ms: T = {};
     const commits = options?.mutations;
@@ -140,7 +135,7 @@ export class StoreCuer<
 
     if (commits) {
       commitKeys.forEach(key => {
-        _ms[key] = (commits[key] as unknown) as Func;
+        _ms[key] = (commits[key] as unknown) as Method;
         if (_ms[key]) {
           mutations[key] = (state: S, payload?: unknown) => {
             _ms[key].call(Object.assign(this.commits, { state }), payload);
@@ -153,7 +148,7 @@ export class StoreCuer<
 
     if (dispatchs) {
       dispatchKeys.forEach(key => {
-        _as[key] = (dispatchs[key] as unknown) as Func;
+        _as[key] = (dispatchs[key] as unknown) as Method;
         if (_as[key]) {
           actions[key] = (injectee: ActionContext<S, S>, payload?: unknown) =>
             _as[key].call(
