@@ -20,7 +20,9 @@ module.exports = {
   },
   overrides: [
     {
-      files: ["**/tests/*.{j,t}s", "**/tests/**/*.{j,t}s"],
+      files: [
+        "**/tests/*.{j,t}s",
+        "**/tests/**/*.{j,t}s"],
       env: {
         mocha: true
       }

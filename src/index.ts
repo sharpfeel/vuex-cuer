@@ -5,7 +5,6 @@ import Vuex, {
   Store,
   Dispatch,
   Commit,
-  GetterTree,
   StoreOptions,
   MutationPayload,
   ActionPayload,
@@ -118,6 +117,11 @@ function rewrite<T>(
   }
 }
 
+/**
+ * 映射
+ * @param keys
+ * @param callback
+ */
 function map<T, R>(keys: (keyof T)[], callback: (key: keyof T) => R) {
   const rets = {} as { [K in keyof T]: R };
   keys.forEach(key => {
@@ -142,13 +146,6 @@ interface DispatchEx<A> extends Dispatch {
   <K extends keyof A>(key: K, payload: Params<A[K]>[0]): Promise<unknown>;
 }
 
-/**
- * getters方法扩展
- */
-type GettersEx<T> = {
-  [K in keyof T]: ReturnType<Extract<T[K], Method>>;
-};
-
 interface Payload<M extends ICuer> {
   type: KeyOf<M>;
   payload: unknown;
@@ -170,11 +167,10 @@ export class StoreCuer<
 > extends Store<S> {
   readonly commits!: M;
   readonly dispatchs!: A;
-  private _getters!: G;
+  readonly getters!: G;
 
   commit!: CommitEx<M>;
   dispatch!: DispatchEx<A>;
-  getters!: GettersEx<G>;
 
   constructor(
     state: S,
@@ -206,19 +202,11 @@ export class StoreCuer<
         );
     });
 
-    const _getters = options?.getters;
-    const getters: GetterTree<S, S> = {};
-    const getterkeys = keys(options?.getters);
-    cover(_getters, getterkeys, (key, method) => {
-      getters[key] = (state: S) =>
-        method.call(Object.assign(this._getters, { state }));
-    });
-
     super({
       state: state,
       mutations,
       actions,
-      getters,
+      //getters,
       plugins: options?.plugins,
       strict: options?.strict
     });
@@ -245,8 +233,9 @@ export class StoreCuer<
       this.dispatchs = bind(this, dispatchs);
     }
 
-    if (_getters) {
-      this._getters = bind(this, _getters);
+    const getters = options?.getters;
+    if (getters) {
+      this.getters = bind(this, getters);
     }
   }
 

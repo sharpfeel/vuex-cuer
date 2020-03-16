@@ -7,8 +7,8 @@
 ### 示例
 
 [`demo`](https://gitee.com/sharp-feel/vuex-cuer/tree/master/src/example)<br>
-[`js`中的写法](https://gitee.com/sharp-feel/vuex-cuer/blob/master/tests/test.store.js)<br>
-[`ts`中的写法](https://gitee.com/sharp-feel/vuex-cuer/blob/master/tests/test.store.ts)
+[`js`中的写法](https://gitee.com/sharp-feel/vuex-cuer/tree/master/tests/test.store.js)<br>
+[`ts`中的写法](https://gitee.com/sharp-feel/vuex-cuer/tree/master/tests/test.store.ts)
 
 ### 效果
 1. 推荐直接通过`commits`调用函数，因为这样有能查看到原函数的注释<br><br>
@@ -26,7 +26,7 @@ class Mutations extends Cuer.Mutations<ExampleStore> {
   test(){
     this.state.xxx //访问 state
     this.store.getters.xxx //访问 getter
-    this.xxx //调用同一个类的 commit
+    this.xxx //调用当前类的 commit
     this.store.commit("xxx") //调用 commit
     this.store.commits.xxx //调用 commit
   }
@@ -41,7 +41,7 @@ class Actions extends Cuer.Actions<ExampleStore> {
   test(){
     this.state.xxx //访问 state
     this.store.getters.xxx //访问 getter
-    this.xxx //调用同一个类的 dispatch
+    this.xxx //调用当前类的 dispatch
     this.store.commit("xxx", payload?) //调用 commit
     this.store.commits.xxx(payload?) //调用 commit
     this.store.dispatch("xxx", payload?) //调用 dispatch
@@ -59,7 +59,7 @@ class Actions extends Cuer.Actions<ExampleStore> {
   test(){
     this.state.xxx //访问 state
     this.getters.xxx //访问 getter
-    this.xxx //访问同一个类的 getter （还有瑕疵）
+    this.xxx //访问当前类的 getter
   }
 }
 

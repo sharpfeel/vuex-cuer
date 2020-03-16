@@ -88,8 +88,7 @@ export default {
   computed: {
     stateV() {
       return exampleStore.state.value;
-    },
-    ...exampleStore.mapGetters("value")
+    }
   },
   methods: {
     commitsAdd() {
