@@ -15,7 +15,7 @@ Vue.use(Vuex);
 /**
  * 函数通用类型
  */
-type Method = (...args: any) => unknown;
+type Method = (...args: unknown[]) => unknown;
 
 /**
  * 函数通用类型集合
@@ -36,24 +36,79 @@ export abstract class ICuer<T extends IState = IState> {
 /**
  * commit 方法集合类
  */
-export class Mutations<T extends IState> extends ICuer<T> {}
+export class Mutations<T extends IState> extends ICuer<T> {
+  //[key: string]: ((payload?: any) => unknown) | T | T["state"];
+}
 
 /**
  * dispatch 方法集合类
  */
-export class Actions<T extends IState> extends ICuer<T> {}
+export class Actions<T extends IState> extends ICuer<T> {
+  //[key: string]: ((payload?: any) => unknown) | T | T["state"];
+}
+
+/**
+ * dispatch 方法集合类
+ */
+export class Getters<T extends IState> extends ICuer<T> {
+  [key: string]: (() => unknown) | T | T["state"];
+}
 
 /**
  * 获取`ICuer`对象上的原链函数
  * @param obj
  */
-function keys(obj?: ICuer) {
+function keys<T>(obj?: T) {
   if (obj != null) {
     return Object.getOwnPropertyNames(Object.getPrototypeOf(obj)).filter(
       v => v != "constructor"
-    );
+    ) as Extract<keyof T, string>[];
   }
   return [];
+}
+
+/**
+ * 覆盖 ICuer 对象，转换成 store 属性的类型
+ * @param obj
+ * @param keys
+ */
+function cover<T>(
+  obj: T | undefined,
+  keys: Extract<keyof T, string>[],
+  replace: (key: Extract<keyof T, string>, m: Method) => void
+) {
+  if (obj != null) {
+    const ms: Methods = {};
+    keys.forEach(key => {
+      ms[key] = (obj[key] as unknown) as Method;
+      if (ms[key]) {
+        replace(key, ms[key]);
+      }
+    });
+  }
+}
+
+//绑定store
+function bind<T, V>(cuer: T, value: V) {
+  Object.assign(value, {
+    store: cuer
+  });
+  return value;
+}
+
+/**
+ * 重写 对象 属性
+ */
+function rewrite<T>(
+  obj: T | undefined,
+  keys: Extract<keyof T, string>[],
+  write: (key: Extract<keyof T, string>) => unknown
+) {
+  if (obj != null) {
+    keys.forEach(key => {
+      obj[key] = write(key) as T[Extract<keyof T, string>];
+    });
+  }
 }
 
 /**
@@ -79,8 +134,8 @@ interface DispatchEx<A> extends Dispatch {
 /**
  * getters方法扩展
  */
-type GettersEx<T extends Methods> = {
-  [P in keyof T]: ReturnType<T[P]>;
+type GettersEx<T extends ICuer> = {
+  [P in keyof T]: ReturnType<Extract<T[P], Method>>;
 };
 
 /**
@@ -103,10 +158,11 @@ export class StoreCuer<
   S,
   M extends ICuer = ICuer,
   A extends ICuer = ICuer,
-  G extends GetterTree<S, S> = Methods
+  G extends ICuer = ICuer
 > extends Store<S> {
   readonly commits!: M;
   readonly dispatchs!: A;
+  private _getters!: G;
 
   commit!: CommitEx<M>;
   dispatch!: DispatchEx<A>;
@@ -122,48 +178,39 @@ export class StoreCuer<
       strict?: StoreOptions<S>["strict"];
     }
   ) {
-    type T = Methods;
     const mutations: MutationTree<S> = {};
-    const _ms: T = {};
     const commits = options?.mutations;
+    const commitKeys = keys(commits);
+    cover(commits, commitKeys, (key, method) => {
+      mutations[key] = (state: S, payload?: unknown) => {
+        method.call(Object.assign(this.commits, { state }), payload);
+      };
+    });
 
     const actions: ActionTree<S, S> = {};
-    const _as: T = {};
     const dispatchs = options?.actions;
+    const dispatchKeys = keys(dispatchs);
+    cover(dispatchs, dispatchKeys, (key, method) => {
+      actions[key] = (injectee: ActionContext<S, S>, payload?: unknown) =>
+        method.call(
+          Object.assign(this.dispatchs, { state: injectee.state }),
+          payload
+        );
+    });
 
-    const commitKeys = keys(commits) as Extract<keyof M, string>[];
-
-    if (commits) {
-      commitKeys.forEach(key => {
-        _ms[key] = (commits[key] as unknown) as Method;
-        if (_ms[key]) {
-          mutations[key] = (state: S, payload?: unknown) => {
-            _ms[key].call(Object.assign(this.commits, { state }), payload);
-          };
-        }
-      });
-    }
-
-    const dispatchKeys = keys(dispatchs) as Extract<keyof A, string>[];
-
-    if (dispatchs) {
-      dispatchKeys.forEach(key => {
-        _as[key] = (dispatchs[key] as unknown) as Method;
-        if (_as[key]) {
-          actions[key] = (injectee: ActionContext<S, S>, payload?: unknown) =>
-            _as[key].call(
-              Object.assign(this.dispatchs, { state: injectee.state }),
-              payload
-            );
-        }
-      });
-    }
+    const _getters = options?.getters;
+    const getters: GetterTree<S, S> = {};
+    const getterkeys = keys(options?.getters);
+    cover(_getters, getterkeys, (key, method) => {
+      getters[key] = (state: S) =>
+        method.call(Object.assign(this._getters, { state }));
+    });
 
     super({
       state: state,
       mutations,
       actions,
-      getters: options?.getters,
+      getters,
       plugins: options?.plugins,
       strict: options?.strict
     });
@@ -174,40 +221,24 @@ export class StoreCuer<
       actions: dispatchKeys
     });
 
+    rewrite(commits, commitKeys, key => {
+      return (payload?: unknown) => this.commit(key, payload);
+    });
+
     if (commits) {
-      commitKeys.forEach(key => {
-        if (commits[key] instanceof Function) {
-          commits[key] = (((payload?: unknown) =>
-            this.commit(key, payload)) as unknown) as M[Extract<
-            keyof M,
-            string
-          >];
-        }
-      });
-      if (options?.mutations) {
-        this.commits = options.mutations;
-        Object.assign(this.commits, {
-          store: this
-        });
-      }
+      this.commits = bind(this, commits);
     }
 
+    rewrite(dispatchs, dispatchKeys, key => {
+      return (payload?: unknown) => this.dispatch(key, payload);
+    });
+
     if (dispatchs) {
-      dispatchKeys.forEach(key => {
-        if (dispatchs[key] instanceof Function) {
-          dispatchs[key] = (((payload?: unknown) =>
-            this.dispatch(key, payload)) as unknown) as A[Extract<
-            keyof A,
-            string
-          >];
-        }
-      });
-      if (options?.actions) {
-        this.dispatchs = options.actions;
-        Object.assign(this.dispatchs, {
-          store: this
-        });
-      }
+      this.dispatchs = bind(this, dispatchs);
+    }
+
+    if (_getters) {
+      this._getters = bind(this, _getters);
     }
   }
 }

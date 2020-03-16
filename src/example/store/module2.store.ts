@@ -46,24 +46,11 @@ class Actions extends Cuer.Actions<Module2Store> {
   }
 }
 
-const getters = {
-  /**
-   * getters.v
-   */
-  v: () => 1
-};
-
-class Module2Store extends Cuer.StoreCuer<
-  typeof state,
-  Mutations,
-  Actions,
-  typeof getters
-> {
+class Module2Store extends Cuer.StoreCuer<typeof state, Mutations, Actions> {
   constructor() {
     super(state, {
       mutations: new Mutations(),
-      actions: new Actions(),
-      getters
+      actions: new Actions()
     });
   }
 }

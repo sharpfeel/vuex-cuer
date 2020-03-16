@@ -34,20 +34,12 @@ class Actions extends Cuer.Actions {
   }
 }
 
-const getters = {
-  /**
-   * getters.v
-   */
-  v: () => 1
-};
-
 /**
- * @type { Cuer.StoreCuer<State,Mutations,Actions,Getters> }
+ * @type { Cuer.StoreCuer<State,Mutations,Actions> }
  */
 const cuer = new Cuer.StoreCuer(state, {
   mutations: new Mutations(),
-  actions: new Actions(),
-  getters
+  actions: new Actions()
 });
 
 cuer.dispatchs.test2();
@@ -57,9 +49,6 @@ export default cuer;
 
 /**
  * @typedef { typeof state } State
- */
-/**
- * @typedef { typeof getters } Getters
  */
 /**
  * @typedef { typeof cuer } TestCuer

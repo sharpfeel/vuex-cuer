@@ -3,6 +3,7 @@
     <div>
       module1.store.state.v：{{ value }}
       <button @click="onChange">刷新</button>
+      {{ getV }}
     </div>
   </div>
 </template>
@@ -17,6 +18,9 @@ export default {
   computed: {
     value() {
       return Module1Store.state.v;
+    },
+    getV() {
+      return Module1Store.getters.getV;
     }
   },
   methods: {
