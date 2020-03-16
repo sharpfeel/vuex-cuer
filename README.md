@@ -10,10 +10,10 @@ Vuex的 `commit` 和 `dispatch` 没有友好的提示，大项目难以维护。
 
 ### 效果
 1. 推荐直接通过`commits`调用函数，因为这样有能查看到原函数的注释<br><br>
-![Image text](./result/1.png)<br>
+![Image text](https://gitee.com/sharp-feel/vuex-cuer/raw/master/result/1.png)<br>
 
 2. 兼容`commit`函数调用，并且优化了提示<br><br>
-![Image text](./result/2.png)<br>
+![Image text](https://gitee.com/sharp-feel/vuex-cuer/raw/master/result/2.png)<br>
 <br>
 
 ### 用法
