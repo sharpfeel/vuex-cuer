@@ -1,12 +1,14 @@
 # vuex-cuer
 
 ### 简介
-Vuex的 `commit` 和 `dispatch` 没有友好的提示，大项目难以维护。如何避免，使用 `vuex-cuer`
+`Vuex` 的 `commit` 和 `dispatch` 没有友好的提示，大项目难以维护。如何避免，使用 `vuex-cuer`
 <br>
 
 ### 示例
 
-[example](https://gitee.com/sharp-feel/vuex-cuer/tree/master/src/example)
+[`demo`](https://gitee.com/sharp-feel/vuex-cuer/tree/master/src/example)<br>
+[`js`中的写法](https://gitee.com/sharp-feel/vuex-cuer/blob/master/tests/test.store.js)<br>
+[`ts`中的写法](https://gitee.com/sharp-feel/vuex-cuer/blob/master/tests/test.store.ts)
 
 ### 效果
 1. 推荐直接通过`commits`调用函数，因为这样有能查看到原函数的注释<br><br>

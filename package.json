@@ -1,11 +1,12 @@
 {
   "name": "vuex-cuer",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "vuex 提示插件",
   "keywords": [
     "vuex",
     "vuex plugin",
-    "vuex cue"
+    "vuex cue",
+    "vuex-ts"
   ],
   "main": "./dist/index.js",
   "types": "./src/index.ts",
