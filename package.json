@@ -7,9 +7,10 @@
     "vuex plugin",
     "vuex cue"
   ],
-  "main": "./src/index.ts",
+  "main": "./dist/index.js",
+  "types": "./src/index.ts",
   "scripts": {
-    "dev": "vue-cli-service build --mode development",
+    "dev": "vue-cli-service serve --mode development",
     "build": "vue-cli-service build",
     "test": "vue-cli-service test:unit",
     "lint": "vue-cli-service lint"
@@ -35,7 +36,8 @@
     "eslint-plugin-vue": "^6.1.2",
     "lint-staged": "^9.5.0",
     "prettier": "^1.19.1",
-    "typescript": "~3.7.5"
+    "typescript": "~3.7.5",
+    "vue-template-compiler": "^2.6.11"
   },
   "gitHooks": {
     "pre-commit": "lint-staged"

@@ -7,7 +7,7 @@ const state = {
   v: 1
 };
 
-class Mutations extends Cuer.Mutations<TestStore> {
+class Mutations extends Cuer.Mutations<Module1Store> {
   /**
    * mutation1
    */
@@ -26,7 +26,7 @@ class Mutations extends Cuer.Mutations<TestStore> {
   }
 }
 
-class Actions extends Cuer.Actions<TestStore> {
+class Actions extends Cuer.Actions<Module1Store> {
   /**
    * action1
    */
@@ -46,17 +46,30 @@ class Actions extends Cuer.Actions<TestStore> {
   }
 }
 
-class TestStore extends Cuer.StoreCuer<typeof state, Mutations, Actions> {
+class Getters extends Cuer.Getters<Module1Store> {
+  /**
+   * getters.v
+   */
+  getV() {
+    return state.v;
+  }
+}
+
+class Module1Store extends Cuer.StoreCuer<
+  typeof state,
+  Mutations,
+  Actions,
+  Getters
+> {
   constructor() {
     super(state, {
       mutations: new Mutations(),
-      actions: new Actions()
+      actions: new Actions(),
+      getters: new Getters()
     });
   }
 }
 
-const store = new TestStore();
-
-store.dispatchs.action1(); //通过store调用
+const store = new Module1Store();
 
 export default store;

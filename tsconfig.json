@@ -17,7 +17,10 @@
     ],
     "paths": {
       "@/*": [
-        "src/*"
+        "src/example/*"
+      ],
+      "vuex-cuer": [
+        "src/index.ts"
       ]
     },
     "lib": [
@@ -28,6 +31,7 @@
   },
   "include": [
     "src/**/*.ts",
+    "src/**/*.vue",
     "tests/**/*.ts"
   ],
   "exclude": [
