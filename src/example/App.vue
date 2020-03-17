@@ -5,7 +5,7 @@
         <code>
           <a class="str">"vuex-cuer"</a>
           <a class="note"
-            >// 继承自vuex.Store，支持通过函数调用commit、dispatch</a
+            >// 继承自vuex.Store， 支持通过函数调用commit、dispatch</a
           >
         </code>
         <br />
@@ -26,7 +26,7 @@
             <a>getters</a>
             <a class="char">.</a>value
           </code>
-          {{ value }}
+          {{ getterV }}
           <code class="note">// getter取值</code>
         </div>
       </div>
@@ -88,6 +88,9 @@ export default {
   computed: {
     stateV() {
       return exampleStore.state.value;
+    },
+    getterV() {
+      return exampleStore.getters.value;
     }
   },
   methods: {
