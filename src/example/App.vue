@@ -90,7 +90,11 @@ export default {
     },
     getterV() {
       return exampleStore.getters.value;
-    }
+    },
+    ...exampleStore.mapState({
+      valueOf: "value"
+    }),
+    ...exampleStore.mapStateOfKeys("value")
   },
   methods: {
     commitsAdd() {

@@ -100,13 +100,13 @@ store.dispatchs.xxx(payload?) //调用 dispatch
 store.subscribe(fn) // （优化约束，以强化提示）
 store.subscribeAction(fn) // （优化约束，以强化提示）
 store.mapState({...}) // （优化约束，以强化提示）
-store.mapStateOfKeys([...]) // （优化约束，以强化提示）
+store.mapStateOfKeys(...) // （优化约束，以强化提示）
 store.mapGetters({...}) // （优化约束，以强化提示）
-store.mapGettersOfKeys([...]) // （优化约束，以强化提示）
+store.mapGettersOfKeys(...) // （优化约束，以强化提示）
 store.mapActions({...}) // （优化约束，以强化提示）
-store.mapActionsOfKeys([...]) // （优化约束，以强化提示）
+store.mapActionsOfKeys(...) // （优化约束，以强化提示）
 store.mapMutations({...}) // （优化约束，以强化提示）
-store.mapMutationsOfKeys([...]) // （优化约束，以强化提示）
+store.mapMutationsOfKeys(...) // （优化约束，以强化提示）
 
 
 ```

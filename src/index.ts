@@ -164,7 +164,7 @@ export class StoreCuer<
    * 映射 `state`
    * @param keys
    */
-  mapStateOfKeys<V extends keyof S>(keys: V[]) {
+  mapStateOfKeys<V extends keyof S>(...keys: V[]) {
     return mapValueOfKeys<S, V>(keys, k => () => this.state[k]);
   }
 
@@ -180,7 +180,7 @@ export class StoreCuer<
    * 映射 `getters`
    * @param keys
    */
-  mapGettersOfKeys<V extends keyof G>(keys: V[]) {
+  mapGettersOfKeys<V extends keyof G>(...keys: V[]) {
     return mapValueOfKeys<G, V>(keys, key => () => this.getters[key]);
   }
 
@@ -196,7 +196,7 @@ export class StoreCuer<
    * 映射 `dispatchs`
    * @param keys
    */
-  mapActionsOfKeys<V extends keyof A>(keys: V[]) {
+  mapActionsOfKeys<V extends keyof A>(...keys: V[]) {
     return mapMethodOfKeys<A, V>(keys, k => this.dispatchs[k]);
   }
 
@@ -212,7 +212,7 @@ export class StoreCuer<
    * 映射 `commits`
    * @param keys
    */
-  mapMutationsOfKeys<V extends keyof M>(keys: V[]) {
+  mapMutationsOfKeys<V extends keyof M>(...keys: V[]) {
     return mapMethodOfKeys<M, V>(keys, key => this.commits[key]);
   }
 }
