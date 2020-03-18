@@ -1,7 +1,8 @@
 # vuex-cuer
 
 ### 简介
-`Vuex` 的 `commit` 和 `dispatch` 没有友好的提示，大项目难以维护。如何避免，使用 `vuex-cuer`
+`vuex-cuer` 继承了 `vuex` 的 `Store`，用 `ts` 约束了参数类型，使得使用时有更好的体验<br>
+特点：代码智能提示，点击方法名可跳转至原函数
 <br>
 
 ### 示例
@@ -95,14 +96,17 @@ store.xxx //访问 Store 的函数
 store.commit("xxx", payload?) //调用 （优化约束，以强化提示）
 store.commits.xxx(payload?) //调用 commit
 store.dispatch("xxx", payload?) //调用 （优化约束，以强化提示）
-store.dispatchs.xxx(payload?) //调用 dispatchs
+store.dispatchs.xxx(payload?) //调用 dispatch
 store.subscribe(fn) // （优化约束，以强化提示）
 store.subscribeAction(fn) // （优化约束，以强化提示）
-store.mapState(...keys) // （优化约束，以强化提示）
-store.mapGetters(...keys) // （优化约束，以强化提示）
-store.mapActions(...keys) // （优化约束，以强化提示）
-store.mapMutations(...keys) // （优化约束，以强化提示）
+store.mapState({...}) // （优化约束，以强化提示）
+store.mapStateOfKeys([...]) // （优化约束，以强化提示）
+store.mapGetters({...}) // （优化约束，以强化提示）
+store.mapGettersOfKeys([...]) // （优化约束，以强化提示）
+store.mapActions({...}) // （优化约束，以强化提示）
+store.mapActionsOfKeys([...]) // （优化约束，以强化提示）
+store.mapMutations({...}) // （优化约束，以强化提示）
+store.mapMutationsOfKeys([...]) // （优化约束，以强化提示）
 
-// 注：mapState、mapGetters、mapActions、mapMutations 暂未找到精确约束的方法
 
 ```

@@ -5,7 +5,8 @@ const state = {
    * some note.
    */
   value: 1,
-  value2: 2
+  value2: 2,
+  value3: "3"
 };
 
 class Mutations extends Cuer.Mutations<ExampleStore> {

@@ -3,8 +3,6 @@ import Vuex, {
   ActionTree,
   MutationTree,
   Store,
-  Dispatch,
-  Commit,
   StoreOptions,
   MutationPayload,
   ActionPayload,
@@ -12,21 +10,17 @@ import Vuex, {
   ActionSubscriber
 } from "vuex";
 
+import {
+  mapValueOfKeys,
+  mapValueOfJson,
+  mapMethodOfKeys,
+  mapMethodOfJson
+} from "./mapping";
+import { keys, cover, rewrite, bind } from "./util";
+import { PayloadEx, CommitEx, DispatchEx } from "./restrain";
 import Vue from "vue";
 
 Vue.use(Vuex);
-
-/**
- * 函数通用类型
- */
-type Method = (...args: unknown[]) => unknown;
-
-/**
- * 函数通用类型集合
- */
-export interface Methods {
-  [key: string]: Method;
-}
 
 export interface IState<S = unknown> {
   state: S;
@@ -56,99 +50,6 @@ export class Actions<T extends IState> extends ICuer<T> {
  */
 export class Getters<T extends IState> extends ICuer<T> {
   //[key: string]: (() => unknown) | T | T["state"];
-}
-
-type KeyOf<T> = Extract<keyof T, string>;
-
-/**
- * 获取`ICuer`对象上的原链函数
- * @param obj
- */
-function keys<T>(obj?: T) {
-  if (obj != null) {
-    return Object.getOwnPropertyNames(Object.getPrototypeOf(obj)).filter(
-      v => v != "constructor"
-    ) as KeyOf<T>[];
-  }
-  return [];
-}
-
-/**
- * 覆盖 ICuer 对象，转换成 store 属性的类型
- * @param obj
- * @param keys
- */
-function cover<T>(
-  obj: T | undefined,
-  keys: KeyOf<T>[],
-  replace: (key: KeyOf<T>, m: Method) => void
-) {
-  if (obj != null) {
-    const ms: Methods = {};
-    keys.forEach(key => {
-      ms[key] = (obj[key] as unknown) as Method;
-      if (ms[key]) {
-        replace(key, ms[key]);
-      }
-    });
-  }
-}
-
-//绑定store
-function bind<T, V>(cuer: T, value: V) {
-  Object.assign(value, {
-    store: cuer
-  });
-  return value;
-}
-
-/**
- * 重写 对象 属性
- */
-function rewrite<T>(
-  obj: T | undefined,
-  keys: KeyOf<T>[],
-  write: (key: KeyOf<T>) => unknown
-) {
-  if (obj != null) {
-    keys.forEach(key => {
-      obj[key] = write(key) as T[KeyOf<T>];
-    });
-  }
-}
-
-/**
- * 映射
- * @param keys
- * @param callback
- */
-function map<T, R>(keys: (keyof T)[], callback: (key: keyof T) => R) {
-  const rets = {} as { [K in keyof T]: R };
-  keys.forEach(key => {
-    rets[key] = callback(key);
-  });
-  return rets;
-}
-
-type Params<T> = Parameters<Extract<T, Method>>;
-
-/**
- * commit方法扩展
- */
-interface CommitEx<M> extends Commit {
-  <K extends keyof M>(key: K, payload: Params<M[K]>[0]): unknown;
-}
-
-/**
- * dispatch方法扩展
- */
-interface DispatchEx<A> extends Dispatch {
-  <K extends keyof A>(key: K, payload: Params<A[K]>[0]): Promise<unknown>;
-}
-
-interface Payload<M extends ICuer> {
-  type: KeyOf<M>;
-  payload: unknown;
 }
 
 /**
@@ -239,13 +140,13 @@ export class StoreCuer<
     }
   }
 
-  subscribe<P extends MutationPayload = Payload<M>>(
+  subscribe<P extends MutationPayload = PayloadEx<M>>(
     fn: ActionSubscriber<P, S>
   ) {
     return super.subscribe(fn);
   }
 
-  subscribeAction<P extends ActionPayload = Payload<A>>(
+  subscribeAction<P extends ActionPayload = PayloadEx<A>>(
     fn: SubscribeActionOptions<P, S>
   ) {
     return super.subscribeAction(fn);
@@ -255,31 +156,63 @@ export class StoreCuer<
    * 映射 `state`
    * @param keys
    */
-  mapState(...keys: (keyof S)[]) {
-    return map(keys, key => () => this.state[key]);
+  mapState<V extends Record<keyof V, keyof S>>(keys: V) {
+    return mapValueOfJson<S, V>(keys, k => () => this.state[k]);
+  }
+
+  /**
+   * 映射 `state`
+   * @param keys
+   */
+  mapStateOfKeys<V extends keyof S>(keys: V[]) {
+    return mapValueOfKeys<S, V>(keys, k => () => this.state[k]);
   }
 
   /**
    * 映射 `getters`
    * @param keys
    */
-  mapGetters(...keys: (keyof G)[]) {
-    return map(keys, key => () => this.getters[key]);
+  mapGetters<V extends Record<keyof V, keyof G>>(keys: V) {
+    return mapValueOfJson<G, V>(keys, k => () => this.getters[k]);
+  }
+
+  /**
+   * 映射 `getters`
+   * @param keys
+   */
+  mapGettersOfKeys<V extends keyof G>(keys: V[]) {
+    return mapValueOfKeys<G, V>(keys, key => () => this.getters[key]);
   }
 
   /**
    * 映射 `dispatchs`
    * @param keys
    */
-  mapActions(...keys: (keyof A)[]) {
-    return map(keys, key => this.dispatchs[key]);
+  mapActions<V extends Record<keyof V, keyof A>>(keys: V) {
+    return mapMethodOfJson<A, V>(keys, k => this.dispatchs[k]);
+  }
+
+  /**
+   * 映射 `dispatchs`
+   * @param keys
+   */
+  mapActionsOfKeys<V extends keyof A>(keys: V[]) {
+    return mapMethodOfKeys<A, V>(keys, k => this.dispatchs[k]);
   }
 
   /**
    * 映射 `commits`
    * @param keys
    */
-  mapMutations(...keys: (keyof M)[]) {
-    return map(keys, key => this.commits[key]);
+  mapMutations<V extends Record<keyof V, keyof M>>(keys: V) {
+    return mapMethodOfJson<M, V>(keys, k => this.commits[k]);
+  }
+
+  /**
+   * 映射 `commits`
+   * @param keys
+   */
+  mapMutationsOfKeys<V extends keyof M>(keys: V[]) {
+    return mapMethodOfKeys<M, V>(keys, key => this.commits[key]);
   }
 }

@@ -78,7 +78,6 @@
 </template>
 <script>
 import exampleStore from "@/store/example.store";
-
 export default {
   data() {
     return {
