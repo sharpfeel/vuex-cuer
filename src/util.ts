@@ -34,12 +34,33 @@ export function cover<T>(
   }
 }
 
-//绑定store
-export function bind<T, V>(cuer: T, value: V) {
-  Object.assign(value, {
-    store: cuer
-  });
-  return value;
+/**
+ *
+ * @param obj
+ * @param key
+ * @param v
+ */
+export function assign<T, K extends string, V>(obj: T, key: K, v: V) {
+  ((obj as unknown) as { [P in K]: V })[key] = v;
+  return obj;
+}
+
+/**
+ * 绑定state
+ * @param obj
+ * @param cuer
+ */
+export function bindState<T, V>(obj: T, state: V) {
+  return assign(obj, "state", state);
+}
+
+/**
+ * 绑定store
+ * @param cuer
+ * @param obj
+ */
+export function bindStore<T, V>(obj: T, cuer: V) {
+  return assign(obj, "store", cuer);
 }
 
 /**

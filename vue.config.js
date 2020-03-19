@@ -73,6 +73,7 @@ const config = {
       config.module.rules.clear();
       config.module.rules.set("ts", tsRule);
       config.optimization.splitChunks(false);
+      //config.optimization.minimize(false);
     }
   }
 };

@@ -16,7 +16,7 @@ import {
   mapMethodOfKeys,
   mapMethodOfJson
 } from "./mapping";
-import { keys, cover, rewrite, bind } from "./util";
+import { keys, cover, rewrite, bindStore, bindState } from "./util";
 import { PayloadEx, CommitEx, DispatchEx } from "./restrain";
 import Vue from "vue";
 
@@ -103,7 +103,7 @@ export class StoreCuer<
     const commitKeys = keys(commits);
     cover(commits, commitKeys, (key, method) => {
       mutations[key] = (state: S, payload?: unknown) => {
-        method.call(Object.assign(this.commits, { state }), payload);
+        method.call(bindState(this.commits, state), payload);
       };
     });
 
@@ -112,10 +112,7 @@ export class StoreCuer<
     const dispatchKeys = keys(dispatchs);
     cover(dispatchs, dispatchKeys, (key, method) => {
       actions[key] = (injectee: ActionContext<S, S>, payload?: unknown) =>
-        method.call(
-          Object.assign(this.dispatchs, { state: injectee.state }),
-          payload
-        );
+        method.call(bindState(this.dispatchs, injectee.state), payload);
     });
 
     super({
@@ -138,7 +135,7 @@ export class StoreCuer<
     });
 
     if (commits) {
-      this.commits = bind(this, commits);
+      this.commits = bindStore(commits, this);
     }
 
     rewrite(dispatchs, dispatchKeys, key => {
@@ -146,12 +143,12 @@ export class StoreCuer<
     });
 
     if (dispatchs) {
-      this.dispatchs = bind(this, dispatchs);
+      this.dispatchs = bindStore(dispatchs, this);
     }
 
     const getters = options?.getters;
     if (getters) {
-      this.getters = bind(this, getters);
+      this.getters = bindStore(getters, this);
     }
   }
 
