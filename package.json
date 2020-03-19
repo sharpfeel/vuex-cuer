@@ -1,7 +1,7 @@
 {
   "name": "vuex-cuer",
   "version": "0.2.2",
-  "description": "vuex 提示插件",
+  "description": "vuex typescript 的 继承",
   "keywords": [
     "vuex",
     "vuex plugin",
