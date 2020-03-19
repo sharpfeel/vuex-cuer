@@ -39,14 +39,14 @@ export class Mutations<T extends IState> extends ICuer<T> {
 }
 
 /**
- * dispatch 方法集合类
+ * dispatch 函数集合类
  */
 export class Actions<T extends IState> extends ICuer<T> {
   //[key: string]: ((payload?: any) => unknown) | T | T["state"];
 }
 
 /**
- * dispatch 方法集合类
+ * dispatch 函数集合类
  */
 export class Getters<T extends IState> extends ICuer<T> {
   //[key: string]: (() => unknown) | T | T["state"];
@@ -76,10 +76,25 @@ export class StoreCuer<
   constructor(
     state: S,
     options?: {
+      /**
+       * 继承 Mutations 的类的实例
+       */
       mutations?: M;
+      /**
+       * 继承 Actions 的类的实例
+       */
       actions?: A;
+      /**
+       * 继承 Getters 的类的实例
+       */
       getters?: G;
+      /**
+       * StoreOptions.plugins
+       */
       plugins?: StoreOptions<S>["plugins"];
+      /**
+       * StoreOptions.strict
+       */
       strict?: StoreOptions<S>["strict"];
     }
   ) {
