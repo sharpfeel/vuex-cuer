@@ -2,7 +2,7 @@
 
 ### 简介
 还在为 `vuex` 的魔法字符串而烦恼？还在为阅读项目里 `vuex` 相关的代码而头痛？<br>
-如何一目了然的知道某个 `type` 的功能？定义常量字符串？
+如何一目了然的知道某个 `type` 的功能？定义字符串常量并加以注释？
 <br>
 那如何快捷的定位到 `commit` 和 `dispatch` 相应的`type` 的原函数，
 <br>
@@ -92,6 +92,9 @@ class ExampleStore extends Cuer.StoreCuer<
 }
 
 const store = new ExampleStore();
+
+export default store;
+
 
 store.state.xxx //访问 state
 store.getters.xxx //访问 getter
