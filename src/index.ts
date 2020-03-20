@@ -33,6 +33,16 @@ export abstract class ICuer<T extends IState = IState> {
 
 /**
  * commit 方法集合类
+ * @example //示例：
+ * class ExampleMutations extends Mutations<ExampleStore>{
+  -  test(){
+  -    this.state.xxx //访问 state
+  -    this.store.getters.xxx //访问 getter
+  -    this.xxx //调用当前类的 commit
+  -    this.store.commit("xxx") //调用 commit
+  -    this.store.commits.xxx //调用 commit
+  -  }
+ * }
  */
 export class Mutations<T extends IState> extends ICuer<T> {
   //[key: string]: ((payload?: any) => unknown) | T | T["state"];
@@ -40,6 +50,18 @@ export class Mutations<T extends IState> extends ICuer<T> {
 
 /**
  * dispatch 函数集合类
+ * @example //示例：
+ * class ExampleActions extends Actions<ExampleStore>{
+  -  test(){
+  -    this.state.xxx //访问 state
+  -    this.store.getters.xxx //访问 getter
+  -    this.xxx //调用当前类的 dispatch
+  -    this.store.commit("xxx", payload?) //调用 commit
+  -    this.store.commits.xxx(payload?) //调用 commit
+  -    this.store.dispatch("xxx", payload?) //调用 dispatch
+  -    this.store.dispatchs.xxx(payload?) //调用 dispatchs
+  -  }
+ * }
  */
 export class Actions<T extends IState> extends ICuer<T> {
   //[key: string]: ((payload?: any) => unknown) | T | T["state"];
@@ -47,6 +69,15 @@ export class Actions<T extends IState> extends ICuer<T> {
 
 /**
  * dispatch 函数集合类
+ * @example //示例：
+ * class ExampleGetters extends Getters<ExampleStore>{
+  -  get test() {
+  -    this.state.xxx //访问 state
+  -    this.getters.xxx //访问 getter
+  -    this.xxx //访问当前类的 getter
+  -    return xxx;
+  -  }
+ * }
  */
 export class Getters<T extends IState> extends ICuer<T> {
   //[key: string]: (() => unknown) | T | T["state"];
@@ -58,7 +89,39 @@ export class Getters<T extends IState> extends ICuer<T> {
  */
 
 /**
- * store 提示类
+ * store 
+ * @example //示例：
+ * class ExampleStore extends StoreCuer<typeof state, Mutations, Actions, Getters>{
+  -  constructor() {
+  -    super(state, {
+  -      mutations: new ExampleMutations(),
+  -      actions: new ExampleActions(),
+  -      getters: new ExampleGetters()
+  -    });
+  -  }
+ * }
+ *
+ *
+ * @example //使用：
+ * const store = new ExampleStore();
+ * 
+ * store.state.xxx //访问 state
+ * store.getters.xxx //访问 getter
+ * store.xxx //访问 Store 的函数
+ * store.commit("xxx", payload?) //调用 （优化约束，以强化提示）
+ * store.commits.xxx(payload?) //调用 commit
+ * store.dispatch("xxx", payload?) //调用 （优化约束，以强化提示）
+ * store.dispatchs.xxx(payload?) //调用 dispatch
+ * store.subscribe(fn) // （优化约束，以强化提示）
+ * store.subscribeAction(fn) // （优化约束，以强化提示）
+ * store.mapState({...}) // 映射 state
+ * store.mapStateOfKeys(...) // 映射 state
+ * store.mapGetters({...}) // 映射 getters
+ * store.mapGettersOfKeys(...) // 映射 getters
+ * store.mapActions({...}) // 映射 actions
+ * store.mapActionsOfKeys(...) // 映射 actions
+ * store.mapMutations({...}) // 映射 mutations
+ * store.mapMutationsOfKeys(...) // 映射 mutations
  */
 export class StoreCuer<
   S,
