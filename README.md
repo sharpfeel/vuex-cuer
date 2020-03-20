@@ -3,10 +3,14 @@
 ### 简介
 还在为 `vuex` 的魔法字符串而烦恼？还在为阅读项目里 `vuex` 相关的代码而头痛？<br>
 如何一目了然的知道某个 `type` 的功能？定义字符串常量加以注释 或者 使用`d.ts`文件进行注释？
-<br>
 那如何快捷的定位到 `commit` 和 `dispatch` 相应的`type` 的原函数？
 <br>
 你可以来试试 `vuex-cuer` ，纵享丝滑
+
+### 地址
+[`github`](https://github.com/sharpfeel/vuex-cuer)&nbsp;
+[`码云`](https://gitee.com/sharp-feel/vuex-cuer)&nbsp;
+[`npm`](https://www.npmjs.com/package/vuex-cuer)&nbsp;
 
 ### 示例
 
