@@ -29,7 +29,9 @@
 ### 诞生
 1. 由来<br>
 这个库的诞生是因为我实在受不了接手的这个项目里的 `vuex` 相关的代码，阅读起来令我头皮发麻<br>
-于是我决定使用 `Typescript` 基于 `vuex` 来封装一个有类型约束的库。<br>
+于是我决定使用 `Typescript` 基于 `vuex` 来封装一个有类型约束的库。
+<br><br>
+
 2. 结构<br>
 但是在设计之初我遇到了`循环引用`的问题，场景是：定义一个 `store` 对象的时候参数有 `mutations` 等等，然后需要在 `mutations` 的函数中访问 `store` 对象，如以下代码：
 ```typescript
@@ -137,8 +139,8 @@ store.dispatchs.xxx(payload?) //调用 dispatch
 ```
 <br>
 结构就基本Ok了，剩下的就是代码逻辑的实现了。
-<br>
-<br>
+<br><br>
+
 3. 优化<br>
 未完待续
 
