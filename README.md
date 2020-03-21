@@ -39,7 +39,6 @@ const store = new Vuex.Store({
   },
   mutations: {
     add (state) {
-      // 变更状态
       state.count++
     }
   }
