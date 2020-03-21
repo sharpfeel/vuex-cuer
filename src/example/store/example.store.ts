@@ -18,7 +18,7 @@ class Mutations extends Cuer.Mutations<ExampleStore> {
   }
 
   /**
-   * 减 `1`
+   * 加 `v`
    */
   add(v: number) {
     this.state.value += v;
