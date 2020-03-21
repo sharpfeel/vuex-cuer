@@ -47,13 +47,7 @@ const store = new Vuex.Store({
 ```
 问题在于这个时候 `store` 还没出生，如何在 `add` 方法中使用 `store` 呢？
 最终我确定了一个思路：以 `Store` 的类为核心，通过泛型关联其他四个属性 `State`、`Mutations`、`Actions`、`Getters`，如下结构：
-```
-                State
-                  ↓
-Mutations → ExampleStore ← Actions
-                  ↑
-               Getters
-```
+![Image text](https://gitee.com/sharp-feel/vuex-cuer/raw/master/md/structure.png)
 <br>
 
 然后还是这个问题，如何在 `add` 方法中使用 `store`？既然把 `Mutations` 封装成了类，可以把 `store` 这个对象绑定到 `Mutations` 的实例的 `this` 上面，于是就有了这个约束：
@@ -146,7 +140,7 @@ store.dispatchs.xxx(payload?) //调用 dispatch
 结构就基本Ok了，剩下的就是代码逻辑的实现了。
 <br>
 3. 优化
-待续
+未完待续
 
 
 <br>
