@@ -14,9 +14,9 @@
 
 ### 示例
 
-[`demo`](https://gitee.com/sharp-feel/vuex-cuer/tree/master/src/example)<br>
-[`js`中的写法](https://gitee.com/sharp-feel/vuex-cuer/tree/master/tests/test.store.js)<br>
-[`ts`中的写法](https://gitee.com/sharp-feel/vuex-cuer/tree/master/tests/test.store.ts)
+[`demo`](https://gitee.com/sharp-feel/vuex-cuer/tree/master/src/example)&nbsp;
+[`js`中的写法](https://gitee.com/sharp-feel/vuex-cuer/tree/master/tests/test.store.js)&nbsp;
+[`ts`中的写法](https://gitee.com/sharp-feel/vuex-cuer/tree/master/tests/test.store.ts)&nbsp;
 
 ### 效果
 1. 推荐直接通过`commits`调用函数，因为这样有能查看到原函数的注释<br><br>
