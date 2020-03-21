@@ -89,7 +89,7 @@ class Mutations extends ICuer<ExampleStore> {
 }
 ```
 同理可得 `Actions` 和 `Getters`。<br>
-当然 `Getters` 有点区别，他下面的是属性，这并无大碍，构造的时候用 `get` 属性访问器就行了。<br>
+当然 `Getters` 有点区别，他下面的是属性，这并无大碍，构造的时候用 `get` 属性访问器就行了。<br><br>
 最后就是 `Store` 类的继承了，`Store`类 需要知道`State`、`Mutations`、`Actions`、`Getters`这四个属性的类型，所以通过泛型来约束：
 ```typescript
 class StoreCuer<
@@ -137,6 +137,7 @@ store.dispatchs.xxx(payload?) //调用 dispatch
 ```
 <br>
 结构就基本Ok了，剩下的就是代码逻辑的实现了。
+<br>
 <br>
 3. 优化<br>
 未完待续
