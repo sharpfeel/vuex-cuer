@@ -41,8 +41,8 @@ const config = {
         mode: "production",
         entry: "./src/index.ts",
         externals: {
-          Vue: "vue",
-          Vuex: "vuex"
+          vue: "vue",
+          vuex: "vuex"
         },
         resolve: {
           extensions: [".ts"]
