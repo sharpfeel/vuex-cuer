@@ -185,6 +185,7 @@
         `dispatch` 同理可得
     
     - `mapState` 函数的优化
+    
         `vuex` 的 `mapState` 是全局的，他取的是`vue`实例化时的入口中的 `$store`。但是我们既然构造了一个 `store` 的类，就可以直接在类中实现`mapState`。
         在这里我实现了两种映射（由于混合类型的约束没有达到我想要的精确约束的效果，如果有好的方法各位大佬可以指点一下），一种是参数是 `json` 格式的
         ```typescript
@@ -255,95 +256,95 @@
 
 ### 用法
 1. class `Mutations`
-```typescript
-class Mutations extends Cuer.Mutations<ExampleStore> {
+    ```typescript
+    class Mutations extends Cuer.Mutations<ExampleStore> {
 
-  test(){
-    this.state.xxx //访问 state
-    this.store.getters.xxx //访问 getter
-    this.xxx //调用当前类的 commit
-    this.store.commit("xxx") //调用 commit
-    this.store.commits.xxx //调用 commit
-  }
-}
-```
+      test(){
+        this.state.xxx //访问 state
+        this.store.getters.xxx //访问 getter
+        this.xxx //调用当前类的 commit
+        this.store.commit("xxx") //调用 commit
+        this.store.commits.xxx //调用 commit
+      }
+    }
+    ```
 <br>
 
 2. class `Actions`
-```typescript
-class Actions extends Cuer.Actions<ExampleStore> {
+    ```typescript
+    class Actions extends Cuer.Actions<ExampleStore> {
 
-  test(){
-    this.state.xxx //访问 state
-    this.store.getters.xxx //访问 getter
-    this.xxx //调用当前类的 dispatch
-    this.store.commit("xxx", payload?) //调用 commit
-    this.store.commits.xxx(payload?) //调用 commit
-    this.store.dispatch("xxx", payload?) //调用 dispatch
-    this.store.dispatchs.xxx(payload?) //调用 dispatchs
-  }
-}
+      test(){
+        this.state.xxx //访问 state
+        this.store.getters.xxx //访问 getter
+        this.xxx //调用当前类的 dispatch
+        this.store.commit("xxx", payload?) //调用 commit
+        this.store.commits.xxx(payload?) //调用 commit
+        this.store.dispatch("xxx", payload?) //调用 dispatch
+        this.store.dispatchs.xxx(payload?) //调用 dispatchs
+      }
+    }
 
-```
+    ```
 <br>
 
 3. class `Getters`
-```typescript
-class Getters extends Cuer.Actions<ExampleStore> {
-  //使用访问器来实现 getter
-  get test() {
-    this.state.xxx //访问 state
-    this.getters.xxx //访问 getter
-    this.xxx //访问当前类的 getter
+    ```typescript
+    class Getters extends Cuer.Actions<ExampleStore> {
+      //使用访问器来实现 getter
+      get test() {
+        this.state.xxx //访问 state
+        this.getters.xxx //访问 getter
+        this.xxx //访问当前类的 getter
 
-    return xxx;
-  }
-}
+        return xxx;
+      }
+    }
 
-```
+    ```
 <br>
 
 4. class `StoreCuer`
-```typescript
-// `StoreCuer` 继承自 `vuex` 的 `Store`，支持除 `module` 之外的大部分内容
+    ```typescript
+    // `StoreCuer` 继承自 `vuex` 的 `Store`，支持除 `module` 之外的大部分内容
 
-class ExampleStore extends Cuer.StoreCuer<
-  typeof state,
-  Mutations,
-  Actions,
-  Getters
-  > {
-  constructor() {
-    super(state, {
-      mutations: new Mutations(),
-      actions: new Actions(),
-      getters: new Getters()
-    });
-  }
-}
+    class ExampleStore extends Cuer.StoreCuer<
+      typeof state,
+      Mutations,
+      Actions,
+      Getters
+      > {
+      constructor() {
+        super(state, {
+          mutations: new Mutations(),
+          actions: new Actions(),
+          getters: new Getters()
+        });
+      }
+    }
 
-const store = new ExampleStore();
+    const store = new ExampleStore();
 
-export default store;
-
-
-store.state.xxx //访问 state
-store.getters.xxx //访问 getter
-store.xxx //访问 Store 的函数
-store.commit("xxx", payload?) //调用 （优化约束，以强化提示）
-store.commits.xxx(payload?) //调用 commit
-store.dispatch("xxx", payload?) //调用 （优化约束，以强化提示）
-store.dispatchs.xxx(payload?) //调用 dispatch
-store.subscribe(fn) // （优化约束，以强化提示）
-store.subscribeAction(fn) // （优化约束，以强化提示）
-store.mapState({...}) // 映射 state
-store.mapStateOfKeys(...) // 映射 state
-store.mapGetters({...}) // 映射 getters
-store.mapGettersOfKeys(...) // 映射 getters
-store.mapActions({...}) // 映射 actions
-store.mapActionsOfKeys(...) // 映射 actions
-store.mapMutations({...}) // 映射 mutations
-store.mapMutationsOfKeys(...) // 映射 mutations
+    export default store;
 
 
-```
+    store.state.xxx //访问 state
+    store.getters.xxx //访问 getter
+    store.xxx //访问 Store 的函数
+    store.commit("xxx", payload?) //调用 （优化约束，以强化提示）
+    store.commits.xxx(payload?) //调用 commit
+    store.dispatch("xxx", payload?) //调用 （优化约束，以强化提示）
+    store.dispatchs.xxx(payload?) //调用 dispatch
+    store.subscribe(fn) // （优化约束，以强化提示）
+    store.subscribeAction(fn) // （优化约束，以强化提示）
+    store.mapState({...}) // 映射 state
+    store.mapStateOfKeys(...) // 映射 state
+    store.mapGetters({...}) // 映射 getters
+    store.mapGettersOfKeys(...) // 映射 getters
+    store.mapActions({...}) // 映射 actions
+    store.mapActionsOfKeys(...) // 映射 actions
+    store.mapMutations({...}) // 映射 mutations
+    store.mapMutationsOfKeys(...) // 映射 mutations
+
+
+    ```
