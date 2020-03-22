@@ -1,6 +1,6 @@
 {
   "name": "vuex-cuer",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "vuex typescript 的 继承",
   "keywords": [
     "vuex",
