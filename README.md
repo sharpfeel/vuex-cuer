@@ -18,6 +18,8 @@
 [`js`中的写法](https://gitee.com/sharp-feel/vuex-cuer/tree/master/tests/test.store.js)&nbsp;
 [`ts`中的写法](https://gitee.com/sharp-feel/vuex-cuer/tree/master/tests/test.store.ts)&nbsp;
 
+将项目 `clone` 下来之后执行 `npm run dev` 即可启动 `demo` ，当然前提是你已经初始化了。
+
 ### 效果
 1. 推荐直接通过`commits`调用函数，因为这样有能查看到原函数的注释
 

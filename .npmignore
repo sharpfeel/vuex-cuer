@@ -1,5 +1,5 @@
 /.vscode
-/result
+/md
 
 npm-debug.log*
 yarn.lock
