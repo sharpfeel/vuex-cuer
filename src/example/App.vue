@@ -91,14 +91,12 @@ export default {
     getterV() {
       return exampleStore.getters.value;
     },
-    ...exampleStore.mapState({
-      valueOf: "value"
-    }),
     ...exampleStore.mapStateOfKeys("value")
   },
   methods: {
     commitsAdd() {
-      exampleStore.commits.addOne();
+      this.$exampleStore.commits.addOne();
+      //exampleStore.commits.addOne();
     },
     commitAdd() {
       exampleStore.commit("addOne");
