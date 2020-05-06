@@ -54,7 +54,7 @@ class Getters extends Cuer.Getters<ExampleStore> {
    * some note...
    */
   get value() {
-    return state.value;
+    return this.state.value;
   }
 }
 
